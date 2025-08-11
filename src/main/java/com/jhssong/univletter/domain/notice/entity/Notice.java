@@ -1,12 +1,17 @@
 package com.jhssong.univletter.domain.notice.entity;
 
+import com.jhssong.univletter.domain.board.entity.Board;
+import com.jhssong.univletter.domain.notice.dto.NoticeDTO;
 import com.jhssong.univletter.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,5 +35,29 @@ public class Notice extends BaseTimeEntity {
 
     @Column(nullable = false)
     private LocalDate writtenAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Board board;
+
+    @Builder
+    public Notice(String title, String link, int views, String author, LocalDate writtenAt, Board board) {
+        this.title = title;
+        this.link = link;
+        this.views = views;
+        this.author = author;
+        this.writtenAt = writtenAt;
+        this.board = board;
+    }
+
+    public static Notice create(NoticeDTO dto, Board board) {
+        return Notice.builder()
+                .title(dto.title())
+                .link(dto.link())
+                .views(dto.views())
+                .author(dto.author())
+                .writtenAt(dto.writtenAt())
+                .board(board)
+                .build();
+    }
 
 }
