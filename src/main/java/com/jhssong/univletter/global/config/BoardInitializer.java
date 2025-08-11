@@ -7,6 +7,7 @@ import com.jhssong.univletter.domain.board.entity.Board;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -29,10 +30,11 @@ public class BoardInitializer implements CommandLineRunner {
         });
 
         for (BoardJsonDTO jsonDTO : boardData) {
-            if (boardRepository.findByNameAndSubName(jsonDTO.name(), jsonDTO.subName()).isEmpty()) {
+            Optional<Board> existing = boardRepository.findByNameAndSubName(jsonDTO.name(), jsonDTO.subName());
+            if (existing.isEmpty()) {
                 Board board = Board.create(jsonDTO);
                 boardRepository.save(board);
-                log.info("✅ '{}({})' 보드가 성공적으로 추가되었습니다.", jsonDTO.name(), jsonDTO.subName());
+                log.info("'{}({})' 게시판이 성공적으로 추가되었습니다.", jsonDTO.name(), jsonDTO.subName());
             }
         }
     }
