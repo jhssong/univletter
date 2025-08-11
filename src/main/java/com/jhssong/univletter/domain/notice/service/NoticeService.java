@@ -22,7 +22,7 @@ public class NoticeService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Notice addNotice(NoticeDTO reqDTO) {
+    public void addNotice(NoticeDTO reqDTO) {
         Board board = boardRepository.findByNameAndSubName(reqDTO.boardName(), reqDTO.boardSubName()).orElseThrow(
                 BoardExceptionUtils::BoardNotFound
         );
@@ -32,7 +32,7 @@ public class NoticeService {
             throw NoticeAlreadyExists();
         } else {
             Notice notice = Notice.create(reqDTO, board);
-            return noticeRepository.save(notice);
+            noticeRepository.save(notice);
         }
     }
 }
