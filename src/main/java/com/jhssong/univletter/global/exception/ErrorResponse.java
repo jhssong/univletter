@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import lombok.Builder;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,23 +41,39 @@ public record ErrorResponse(
 
     public static ResponseEntity<ErrorResponse> toResponseEntity(MethodArgumentNotValidException ex,
                                                                  HttpServletRequest request) {
-        String joinedFields = ex.getBindingResult()
-                .getFieldErrors()
+        String detailedMessage = ex.getBindingResult().getFieldErrors()
                 .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(error -> {
+                    String field = error.getField();
+                    String defaultMessage = error.getDefaultMessage();
+                    String failedConstraint = "";
+
+                    // error.getCodes() returns an array like ["DTO.email.NotBlank", "NotBlank", ...]
+                    // The last element usually represents the validation constraint name
+                    String[] codes = error.getCodes();
+                    if (codes != null && codes.length > 0) {
+                        failedConstraint = codes[codes.length - 1];
+                    }
+
+                    return switch (failedConstraint) {
+                        case "NotNull" -> field + "은(는) 필수 입력 항목입니다.";
+                        case "NotBlank" -> field + "은(는) 빈 값 또는 공백일 수 없습니다.";
+                        case "Email" -> "이메일 형식이 올바르지 않습니다.";
+                        default -> field + " " + defaultMessage;
+                    };
+                })
                 .distinct()
                 .collect(Collectors.joining(", "));
-
-        String finalMessage = joinedFields + "은(는) 필수 입력값입니다.";
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
                         .title(HttpStatus.BAD_REQUEST.getReasonPhrase())
                         .status(HttpStatus.BAD_REQUEST.value())
-                        .detail(finalMessage)
+                        .detail(detailedMessage)
                         .instance(request.getRequestURI())
                         .timestamp(LocalDateTime.now())
                         .build()
                 );
     }
+
 }
