@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 
@@ -41,7 +42,7 @@ public record ErrorResponse(
 
     public static ResponseEntity<ErrorResponse> toResponseEntity(MethodArgumentNotValidException ex,
                                                                  HttpServletRequest request) {
-        String detailedMessage = ex.getBindingResult().getFieldErrors()
+        String message = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(error -> {
                     String field = error.getField();
@@ -69,11 +70,23 @@ public record ErrorResponse(
                 .body(ErrorResponse.builder()
                         .title(HttpStatus.BAD_REQUEST.getReasonPhrase())
                         .status(HttpStatus.BAD_REQUEST.value())
-                        .detail(detailedMessage)
+                        .detail(message)
                         .instance(request.getRequestURI())
                         .timestamp(LocalDateTime.now())
                         .build()
                 );
+    }
+
+    public static ResponseEntity<ErrorResponse> toResponseEntity(HttpRequestMethodNotSupportedException ex,
+                                                                 HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(ErrorResponse.builder()
+                        .title(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
+                        .status(HttpStatus.METHOD_NOT_ALLOWED.value())
+                        .detail("지원되지 않는 요청 메서드입니다.")
+                        .instance(request.getRequestURI())
+                        .timestamp(LocalDateTime.now())
+                        .build());
     }
 
 }
