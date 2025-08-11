@@ -10,9 +10,11 @@ import com.jhssong.univletter.domain.notice.entity.Notice;
 import com.jhssong.univletter.domain.notice.repository.NoticeRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -33,6 +35,8 @@ public class NoticeService {
         } else {
             Notice notice = Notice.create(reqDTO, board);
             noticeRepository.save(notice);
+            log.info("새로운 공지글이 추가되었습니다. (게시판: {}, 분야: {}, 제목: {})", board.getName(), board.getSubName(),
+                    notice.getTitle());
         }
     }
 }

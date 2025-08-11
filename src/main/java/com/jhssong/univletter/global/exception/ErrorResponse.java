@@ -4,12 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 
+@Slf4j
 @Builder
 public record ErrorResponse(
         String title,
@@ -19,6 +21,7 @@ public record ErrorResponse(
         LocalDateTime timestamp
 ) {
     public static ResponseEntity<ErrorResponse> toResponseEntity(Exception ex, WebRequest request) {
+        log.error(ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.builder()
                         .title(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
@@ -30,6 +33,7 @@ public record ErrorResponse(
     }
 
     public static ResponseEntity<ErrorResponse> toResponseEntity(BaseDomainException ex, WebRequest request) {
+        log.error("에러 발생! {}-{}", ex.getStatus().value(), ex.getMessage());
         return ResponseEntity.status(ex.getStatus())
                 .body(ErrorResponse.builder()
                         .title(ex.getStatus().getReasonPhrase())
@@ -65,7 +69,7 @@ public record ErrorResponse(
                 })
                 .distinct()
                 .collect(Collectors.joining(", "));
-
+        log.error("사용자 입력 에러 발생! {}-{}", HttpStatus.BAD_REQUEST.value(), message);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
                         .title(HttpStatus.BAD_REQUEST.getReasonPhrase())
