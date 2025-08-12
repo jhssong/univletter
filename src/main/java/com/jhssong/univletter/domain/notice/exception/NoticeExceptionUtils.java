@@ -1,4 +1,4 @@
-package com.jhssong.univletter.domain.notice;
+package com.jhssong.univletter.domain.notice.exception;
 
 import com.jhssong.univletter.global.exception.BusinessException;
 import org.springframework.http.HttpStatus;

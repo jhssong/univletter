@@ -1,6 +1,6 @@
 package com.jhssong.univletter.domain.notice.service;
 
-import static com.jhssong.univletter.domain.notice.NoticeExceptionUtils.NoticeAlreadyExists;
+import static com.jhssong.univletter.domain.notice.exception.NoticeExceptionUtils.NoticeAlreadyExists;
 
 import com.jhssong.univletter.domain.board.BoardExceptionUtils;
 import com.jhssong.univletter.domain.board.entity.Board;
