@@ -58,8 +58,8 @@ jobs:
             
             cd /home/${{ secrets.SSH_USERNAME }}/Workspace
             
-            docker-compose pull
-            docker-compose up -d --remove-orphans
+            docker compose pull
+            docker compose up -d --remove-orphans
             docker system prune -af
 
             echo "Deployment completed on ${{ secrets.SSH_HOST }}"
