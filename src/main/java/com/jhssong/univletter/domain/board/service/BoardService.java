@@ -40,4 +40,8 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getAllBoardNames() {
+        return boardRepository.findDistinctNames();
+    }
+
 }
