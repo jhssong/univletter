@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>UnivLetter</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        a:hover {
+            cursor: pointer;
+        }
+
+        .article-divider {
+            margin: 24px 0;
+            height: 1px;
+            background-color: #eee;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; padding: 0;">
+<div
+        style="
+        height: 100%; width: 100%; max-width: 640px; margin: auto;
+        color: #333; line-height: 1.5;
+        font-family: AppleSDGothic, apple sd gothic neo, noto sans korean, noto sans korean regular, noto sans cjk kr, noto sans cjk, nanum gothic, malgun gothic, dotum, arial, helvetica, MS Gothic, sans-serif!important;">
+    <div style="
+          background-color: #ffffff;
+          border-radius: 5px;
+          border: 1px solid #e1e1e1;
+          width: 100%;
+          margin: 40px 0;
+          padding: 0 24px;
+        ">
+
+        <!-- Logo section -->
+        <a href="https://univletter.jhssong.com/">
+            <img src="https://univletter.jhssong.com/logo"
+                 style="display: block; width: 100%; height: auto; max-width: 200px;">
+        </a>
+
+        <!-- Main title section-->
+        <div style="padding: 16px 0px;">
+            <span style="font-size: 24px; font-weight: bold; color: #333; line-height: 1.5;"
+                  th:text="${mainTitle}"></span>
+        </div>
+
+        <div class="article-divider"></div>
+
+        <!-- Article list section -->
+        <div th:each="article, iterStat : ${articles}">
+            <div>
+                <a th:href="${article.link}">
+                    <span style="font-size: 18px; font-weight: bold;"
+                          th:text="${article.title}"></span>
+                </a>
+            </div>
+
+            <div style=" height: 12px;"></div>
+
+            <div>
+                <span style="font-size: 16px;" th:text="${article.boardSubName}"></span>
+                <span style="font-size: 18px;">&#183;</span>
+                <span style="font-size: 16px;" th:text="${article.formattedDate}"></span>
+            </div>
+            <div class="article-divider" th:if="${!iterStat.last}"></div>
+        </div>
+
+        <!-- Footer section -->
+        <div style="padding: 60px 0 24px 0; text-align: center; font-size: 12px; color: #747579;">
+            <span>오전 07시 새로운 공지사항과 함께 돌아오겠습니다.</span>
+            <br/>
+            <span>감사합니다.</span>
+            <br/>
+            <a th:href="${unsubscribeLink}"><span style="text-decoration: underline;">Unsubscribe</span></a>
+        </div>
+
+    </div>
+</div>
+</body>
+
+</html>
