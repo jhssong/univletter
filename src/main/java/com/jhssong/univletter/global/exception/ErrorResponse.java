@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @Builder
@@ -92,5 +93,18 @@ public record ErrorResponse(
                         .timestamp(LocalDateTime.now())
                         .build());
     }
+
+    public static ResponseEntity<ErrorResponse> toResponseEntity(NoResourceFoundException ex,
+                                                                 HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(ErrorResponse.builder()
+                        .title(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
+                        .status(HttpStatus.METHOD_NOT_ALLOWED.value())
+                        .detail("지원되지 않는 요청 메서드입니다.")
+                        .instance(request.getRequestURI())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
 
 }
