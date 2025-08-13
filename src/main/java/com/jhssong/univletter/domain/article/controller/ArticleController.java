@@ -1,7 +1,7 @@
-package com.jhssong.univletter.domain.notice.controller;
+package com.jhssong.univletter.domain.article.controller;
 
-import com.jhssong.univletter.domain.notice.dto.NoticeDTO;
-import com.jhssong.univletter.domain.notice.service.NoticeService;
+import com.jhssong.univletter.domain.article.dto.ArticleDTO;
+import com.jhssong.univletter.domain.article.service.ArticleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class NoticeController {
+public class ArticleController {
 
-    private final NoticeService noticeService;
+    private final ArticleService articleService;
 
     @PostMapping("/api/notice")
-    public ResponseEntity<Void> addNotice(@Valid @RequestBody NoticeDTO reqDTO) {
-        noticeService.addNotice(reqDTO);
+    public ResponseEntity<Void> addNotice(@Valid @RequestBody ArticleDTO reqDTO) {
+        articleService.addNotice(reqDTO);
         return ResponseEntity.ok().build();
     }
 }

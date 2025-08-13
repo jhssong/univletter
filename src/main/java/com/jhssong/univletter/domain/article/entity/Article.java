@@ -1,7 +1,7 @@
-package com.jhssong.univletter.domain.notice.entity;
+package com.jhssong.univletter.domain.article.entity;
 
+import com.jhssong.univletter.domain.article.dto.ArticleDTO;
 import com.jhssong.univletter.domain.board.entity.Board;
-import com.jhssong.univletter.domain.notice.dto.NoticeDTO;
 import com.jhssong.univletter.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Notice extends BaseTimeEntity {
+public class Article extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,7 +40,7 @@ public class Notice extends BaseTimeEntity {
     private Board board;
 
     @Builder
-    public Notice(String title, String link, int views, String author, LocalDate writtenAt, Board board) {
+    public Article(String title, String link, int views, String author, LocalDate writtenAt, Board board) {
         this.title = title;
         this.link = link;
         this.views = views;
@@ -49,8 +49,8 @@ public class Notice extends BaseTimeEntity {
         this.board = board;
     }
 
-    public static Notice create(NoticeDTO dto, Board board) {
-        return Notice.builder()
+    public static Article create(ArticleDTO dto, Board board) {
+        return Article.builder()
                 .title(dto.title())
                 .link(dto.link())
                 .views(dto.views())

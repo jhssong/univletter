@@ -1,7 +1,7 @@
 package com.jhssong.univletter.domain.board.entity;
 
+import com.jhssong.univletter.domain.article.entity.Article;
 import com.jhssong.univletter.domain.board.dto.BoardJsonDTO;
-import com.jhssong.univletter.domain.notice.entity.Notice;
 import com.jhssong.univletter.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,7 +34,7 @@ public class Board extends BaseTimeEntity {
     private String link;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Notice> notices;
+    private List<Article> articles;
 
     @Builder
     public Board(String name, String subName, String link) {

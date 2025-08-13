@@ -1,4 +1,4 @@
-package com.jhssong.univletter.domain.notice.dto;
+package com.jhssong.univletter.domain.article.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import lombok.Builder;
 
 @Builder
-public record NoticeDTO(
+public record ArticleDTO(
         @NotBlank(message = "제목")
         String title,
         @NotBlank(message = "링크")

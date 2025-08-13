@@ -1,13 +1,13 @@
-package com.jhssong.univletter.domain.notice.service;
+package com.jhssong.univletter.domain.article.service;
 
-import static com.jhssong.univletter.domain.notice.exception.NoticeExceptionUtils.NoticeAlreadyExists;
+import static com.jhssong.univletter.domain.article.exception.ArticleExceptionUtils.NoticeAlreadyExists;
 
+import com.jhssong.univletter.domain.article.dto.ArticleDTO;
+import com.jhssong.univletter.domain.article.entity.Article;
+import com.jhssong.univletter.domain.article.repository.ArticleRepository;
 import com.jhssong.univletter.domain.board.BoardExceptionUtils;
 import com.jhssong.univletter.domain.board.entity.Board;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
-import com.jhssong.univletter.domain.notice.dto.NoticeDTO;
-import com.jhssong.univletter.domain.notice.entity.Notice;
-import com.jhssong.univletter.domain.notice.repository.NoticeRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,25 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class NoticeService {
+public class ArticleService {
 
-    private final NoticeRepository noticeRepository;
+    private final ArticleRepository articleRepository;
     private final BoardRepository boardRepository;
 
     @Transactional
-    public void addNotice(NoticeDTO reqDTO) {
+    public void addNotice(ArticleDTO reqDTO) {
         Board board = boardRepository.findByNameAndSubName(reqDTO.boardName(), reqDTO.boardSubName()).orElseThrow(
                 BoardExceptionUtils::BoardNotFound
         );
-        Optional<Notice> existing = noticeRepository.findByTitleAndWrittenAt(reqDTO.title(), reqDTO.writtenAt());
+        Optional<Article> existing = articleRepository.findByTitleAndWrittenAt(reqDTO.title(), reqDTO.writtenAt());
 
         if (existing.isPresent()) {
             throw NoticeAlreadyExists();
         } else {
-            Notice notice = Notice.create(reqDTO, board);
-            noticeRepository.save(notice);
+            Article article = Article.create(reqDTO, board);
+            articleRepository.save(article);
             log.info("새로운 공지글이 추가되었습니다. (게시판: {}, 분야: {}, 제목: {})", board.getName(), board.getSubName(),
-                    notice.getTitle());
+                    article.getTitle());
         }
     }
 }
