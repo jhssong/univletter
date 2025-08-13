@@ -4,9 +4,12 @@ import static com.jhssong.univletter.domain.subscribe.exception.SubscribeExcepti
 
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeDelReqDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeReqDTO;
+import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
 import com.jhssong.univletter.domain.subscribe.entity.Subscribe;
 import com.jhssong.univletter.domain.subscribe.repository.SubscribeRepository;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,4 +53,8 @@ public class SubscribeService {
         }
     }
 
+    public List<SubscribeResDTO> getAllSubscribers() {
+        List<Subscribe> subscribers = subscribeRepository.findAll();
+        return subscribers.stream().map(SubscribeResDTO::fromEntity).collect(Collectors.toList());
+    }
 }
