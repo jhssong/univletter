@@ -2,7 +2,7 @@ package com.jhssong.univletter.domain.article.service;
 
 import static com.jhssong.univletter.domain.article.exception.ArticleExceptionUtils.NoticeAlreadyExists;
 
-import com.jhssong.univletter.domain.article.dto.ArticleDTO;
+import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
 import com.jhssong.univletter.domain.article.entity.Article;
 import com.jhssong.univletter.domain.article.repository.ArticleRepository;
 import com.jhssong.univletter.domain.board.BoardExceptionUtils;
@@ -24,7 +24,7 @@ public class ArticleService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public void addNotice(ArticleDTO reqDTO) {
+    public void addNotice(ArticleReqDTO reqDTO) {
         Board board = boardRepository.findByNameAndSubName(reqDTO.boardName(), reqDTO.boardSubName()).orElseThrow(
                 BoardExceptionUtils::BoardNotFound
         );
