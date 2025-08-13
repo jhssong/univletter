@@ -1,6 +1,6 @@
 package com.jhssong.univletter.domain.article.controller;
 
-import com.jhssong.univletter.domain.article.dto.ArticleDTO;
+import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
 import com.jhssong.univletter.domain.article.service.ArticleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping("/api/notice")
-    public ResponseEntity<Void> addNotice(@Valid @RequestBody ArticleDTO reqDTO) {
+    public ResponseEntity<Void> addNotice(@Valid @RequestBody ArticleReqDTO reqDTO) {
         articleService.addNotice(reqDTO);
         return ResponseEntity.ok().build();
     }

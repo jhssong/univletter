@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import lombok.Builder;
 
 @Builder
-public record ArticleDTO(
+public record ArticleReqDTO(
         @NotBlank(message = "제목")
         String title,
         @NotBlank(message = "링크")

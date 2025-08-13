@@ -1,6 +1,6 @@
 package com.jhssong.univletter.domain.article.entity;
 
-import com.jhssong.univletter.domain.article.dto.ArticleDTO;
+import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
 import com.jhssong.univletter.domain.board.entity.Board;
 import com.jhssong.univletter.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
@@ -49,7 +49,7 @@ public class Article extends BaseTimeEntity {
         this.board = board;
     }
 
-    public static Article create(ArticleDTO dto, Board board) {
+    public static Article create(ArticleReqDTO dto, Board board) {
         return Article.builder()
                 .title(dto.title())
                 .link(dto.link())
