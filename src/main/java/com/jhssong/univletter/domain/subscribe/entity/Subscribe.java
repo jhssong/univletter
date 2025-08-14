@@ -1,6 +1,7 @@
 package com.jhssong.univletter.domain.subscribe.entity;
 
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeReqDTO;
+import com.jhssong.univletter.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,13 +16,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Subscribe {
+public class Subscribe extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String name;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -32,21 +30,19 @@ public class Subscribe {
     private LocalDateTime unsubscribedAt;
 
     @Builder
-    protected Subscribe(String email, String name) {
-        this.name = name;
+    protected Subscribe(String email) {
         this.email = email;
         this.token = UUID.randomUUID().toString();
     }
 
     public static Subscribe create(SubscribeReqDTO reqDTO) {
         return Subscribe.builder()
-                .name(reqDTO.name())
                 .email(reqDTO.email())
                 .build();
     }
 
     public void update(SubscribeReqDTO reqDTO) {
-        this.name = reqDTO.name();
+        this.unsubscribedAt = null;
     }
 
     public void unsubscribe() {

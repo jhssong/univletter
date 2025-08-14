@@ -31,10 +31,10 @@ public class SubscribeService {
         if (existing.isPresent()) {
             subscribe = existing.get();
             subscribe.update(reqDTO);
-            log.info("구독자 정보가 수정되었습니다. (이메일: {}, 이름: {})", reqDTO.email(), reqDTO.name());
+            log.info("구독자 정보가 수정되었습니다. (이메일: {})", reqDTO.email());
         } else {
             subscribe = Subscribe.create(reqDTO);
-            log.info("구독자 정보가 추가되었습니다. (이메일: {}, 이름: {})", reqDTO.email(), reqDTO.name());
+            log.info("구독자 정보가 추가되었습니다. (이메일: {})", reqDTO.email());
         }
         return subscribeRepository.save(subscribe);
     }
@@ -47,7 +47,7 @@ public class SubscribeService {
         if (existing.isPresent()) {
             subscribe = existing.get();
             subscribe.unsubscribe();
-            log.info("{}님이 구독을 취소하였습니다. (이메일: {})", subscribe.getName(), subscribe.getEmail());
+            log.info("구독자가 구독을 취소하였습니다. (이메일: {})", subscribe.getEmail());
         } else {
             throw SubscriptionNotFound();
         }
