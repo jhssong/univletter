@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Builder;
 
 @Builder
@@ -39,7 +38,7 @@ public record ArticleResDTO(
     public static List<ArticleResDTO> fromEntity(List<Article> articles) {
         return articles.stream()
                 .map(ArticleResDTO::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public String getFormattedDate() {

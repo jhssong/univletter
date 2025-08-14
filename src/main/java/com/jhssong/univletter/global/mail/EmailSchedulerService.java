@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,7 +42,7 @@ public class EmailSchedulerService {
 
             List<ArticleResDTO> allArticlesForNewsletter = boardResDTOS.stream()
                     .flatMap(boardResDTO -> boardResDTO.articleResDTOS().stream())
-                    .collect(Collectors.toList());
+                    .toList();
 
             context.setVariable("articles", allArticlesForNewsletter);
 
