@@ -15,7 +15,7 @@ public class EmailTestController {
 
     private final EmailSchedulerService emailSchedulerService;
 
-    @PostMapping("/api/test-send")
+    @PostMapping("/api/admin/test-send")
     public ResponseEntity<String> sendDailyNewsletterManually() {
         log.info("이메일 전송 테스트 시작.");
         try {
