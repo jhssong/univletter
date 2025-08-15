@@ -22,7 +22,8 @@ public record SubscribeResDTO(
                 .email(subscribe.getEmail())
                 .isSubscribed(subscribe.getUnsubscribedAt() == null)
                 .subscribedDate(subscribe.getCreatedAt().toLocalDate())
-                .unsubscribedDate(subscribe.getUnsubscribedAt().toLocalDate())
+                .unsubscribedDate(
+                        subscribe.getUnsubscribedAt() == null ? null : subscribe.getUnsubscribedAt().toLocalDate())
                 .build();
     }
 }

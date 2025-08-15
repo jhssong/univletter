@@ -26,3 +26,6 @@ spring:
 
 server:
   port: ${PORT}
+
+admin:
+  token: ${ADMIN_PASSWORD}

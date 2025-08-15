@@ -19,6 +19,5 @@ spring:
 server:
   port: 8080
 
-logging:
-  level:
-    web: DEBUG
+admin:
+  token: "admin"

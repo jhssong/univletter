@@ -7,8 +7,9 @@ import com.jhssong.univletter.domain.board.repository.BoardRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,15 +34,20 @@ public class BoardService {
                     List<Article> filteredArticles = allArticlesForBoard.stream()
                             .filter(article -> article.getWrittenAt() != null && !article.getWrittenAt()
                                     .isBefore(oneDayBeforeTodayKst))
-                            .collect(Collectors.toList());
+                            .toList();
 
                     return BoardResDTO.fromEntity(board, filteredArticles);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> getAllBoardNames() {
         return boardRepository.findDistinctNames();
+    }
+
+    public Page<BoardResDTO> getPageableBoards(Pageable pageable) {
+        return boardRepository.findAll(pageable)
+                .map(board -> BoardResDTO.fromEntity(board, List.of()));
     }
 
 }

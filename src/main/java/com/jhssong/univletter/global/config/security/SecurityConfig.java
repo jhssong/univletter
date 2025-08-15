@@ -1,32 +1,67 @@
 package com.jhssong.univletter.global.config.security;
 
+import com.jhssong.univletter.global.config.security.auth.AuthFilter;
+import com.jhssong.univletter.global.config.security.auth.AuthProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   AuthFilter authFilter)
+            throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(
+                        org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/api/test/**").permitAll()
-                        // 다른 모든 요청은 허용
-                        .anyRequest().permitAll()
+                        .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .anyRequest().authenticated()
                 )
-                // 폼 로그인 설정 (필요 없다면 제거 가능)
-                // REST API에서는 보통 토큰 기반 인증을 사용하므로 formLogin은 필요 없을 수 있습니다.
-                // .formLogin(formLogin -> formLogin.permitAll())
-                // HTTP Basic 인증 설정 (간단한 테스트용)
-                .httpBasic(httpBasic -> httpBasic.init(http)); // HTTP Basic 인증 활성화 (간단한 테스트용)
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/admin/dashboard", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                )
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+                                                       PasswordEncoder passwordEncoder,
+                                                       AuthProvider authProvider) {
+        return new ProviderManager(authProvider);
+    }
+
+    @Bean
+    public AuthProvider authProvider(UserDetailsService userDetailsService,
+                                     PasswordEncoder passwordEncoder) {
+        return new AuthProvider(userDetailsService, passwordEncoder);
     }
 }

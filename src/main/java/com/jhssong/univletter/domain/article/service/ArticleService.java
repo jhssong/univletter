@@ -3,14 +3,17 @@ package com.jhssong.univletter.domain.article.service;
 import static com.jhssong.univletter.domain.article.exception.ArticleExceptionUtils.NoticeAlreadyExists;
 
 import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
+import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
 import com.jhssong.univletter.domain.article.entity.Article;
 import com.jhssong.univletter.domain.article.repository.ArticleRepository;
-import com.jhssong.univletter.domain.board.BoardExceptionUtils;
 import com.jhssong.univletter.domain.board.entity.Board;
+import com.jhssong.univletter.domain.board.exception.BoardExceptionUtils;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,5 +41,9 @@ public class ArticleService {
             log.info("새로운 공지글이 추가되었습니다. (게시판: {}, 분야: {}, 제목: {})", board.getName(), board.getSubName(),
                     article.getTitle());
         }
+    }
+
+    public Page<ArticleResDTO> getPageableArticles(Pageable pageable) {
+        return articleRepository.findAll(pageable).map(ArticleResDTO::fromEntity);
     }
 }
