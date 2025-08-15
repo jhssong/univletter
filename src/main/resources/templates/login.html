@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
@@ -102,7 +102,7 @@
 <div class="container">
 
     <a href="https://univletter.jhssong.com/">
-        <img class="logo" src="https://univletter.jhssong.com/logo">
+        <img alt="UnivLetter logo" class="logo" th:src="@{/logo.png}"/>
     </a>
 
     <div class="title">
