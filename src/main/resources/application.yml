@@ -2,6 +2,12 @@ spring:
   profiles:
     active: local
 
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
   jpa:
     open-in-view: false
     show-sql: false
@@ -12,3 +18,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
+
+errorping:
+  channelId: ${ERRORPING_CHANNEL_ID}
+  apiKey: ${ERRORPING_API_KEY}
+  url: ${ERRORPING_URL}
