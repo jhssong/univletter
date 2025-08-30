@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,7 +21,7 @@ public class SubscribeController {
     private final SubscribeService subscribeService;
 
     @PostMapping("/api/subscribe")
-    public ResponseEntity<SubscribeResDTO> subscribe(@Valid @ModelAttribute SubscribeReqDTO reqDTO) {
+    public ResponseEntity<SubscribeResDTO> subscribe(@Valid @RequestBody SubscribeReqDTO reqDTO) {
         Subscribe subscribe = subscribeService.subscribe(reqDTO);
         return ResponseEntity.ok(SubscribeResDTO.fromEntity(subscribe));
     }
