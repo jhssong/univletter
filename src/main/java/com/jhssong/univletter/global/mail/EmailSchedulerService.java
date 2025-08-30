@@ -1,7 +1,7 @@
 package com.jhssong.univletter.global.mail;
 
 import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
-import com.jhssong.univletter.domain.board.dto.BoardResDTO;
+import com.jhssong.univletter.domain.board.dto.BoardWithArticleResDTO;
 import com.jhssong.univletter.domain.board.service.BoardService;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
 import com.jhssong.univletter.domain.subscribe.service.SubscribeService;
@@ -38,10 +38,11 @@ public class EmailSchedulerService {
 
         for (String boardName : boardNames) {
             // TODO Categorize subscribers according to their subscribed boards
-            List<BoardResDTO> boardResDTOS = boardService.getBoardWithArticlesByBoardName(boardName);
+            List<BoardWithArticleResDTO> boardWithArticleResDTOS = boardService.getBoardWithArticlesByBoardName(
+                    boardName);
 
-            List<ArticleResDTO> allArticlesForNewsletter = boardResDTOS.stream()
-                    .flatMap(boardResDTO -> boardResDTO.articleResDTOS().stream())
+            List<ArticleResDTO> allArticlesForNewsletter = boardWithArticleResDTOS.stream()
+                    .flatMap(boardWithArticleResDTO -> boardWithArticleResDTO.articleResDTOS().stream())
                     .toList();
 
             context.setVariable("articles", allArticlesForNewsletter);

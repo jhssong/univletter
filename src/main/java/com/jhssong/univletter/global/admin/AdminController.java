@@ -2,7 +2,7 @@ package com.jhssong.univletter.global.admin;
 
 import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
 import com.jhssong.univletter.domain.article.service.ArticleService;
-import com.jhssong.univletter.domain.board.dto.BoardResDTO;
+import com.jhssong.univletter.domain.board.dto.BoardWithArticleResDTO;
 import com.jhssong.univletter.domain.board.service.BoardService;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
 import com.jhssong.univletter.domain.subscribe.service.SubscribeService;
@@ -49,7 +49,7 @@ public class AdminController {
         model.addAttribute("subscribersTotalPages", subscribersPageData.getTotalPages());
 
         // Board Data
-        Page<BoardResDTO> boardsPageData = boardService.getPageableBoards(pageable);
+        Page<BoardWithArticleResDTO> boardsPageData = boardService.getPageableBoards(pageable);
         model.addAttribute("boards", boardsPageData.getContent());
         model.addAttribute("boardsPage", boardsPageData.getNumber());
         model.addAttribute("boardsTotalPages", boardsPageData.getTotalPages());

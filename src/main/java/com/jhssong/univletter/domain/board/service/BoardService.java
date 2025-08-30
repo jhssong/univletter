@@ -1,7 +1,7 @@
 package com.jhssong.univletter.domain.board.service;
 
 import com.jhssong.univletter.domain.article.entity.Article;
-import com.jhssong.univletter.domain.board.dto.BoardResDTO;
+import com.jhssong.univletter.domain.board.dto.BoardWithArticleResDTO;
 import com.jhssong.univletter.domain.board.entity.Board;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public List<BoardResDTO> getBoardWithArticlesByBoardName(String boardName) {
+    public List<BoardWithArticleResDTO> getBoardWithArticlesByBoardName(String boardName) {
         List<Board> boards = boardRepository.findAllByName(boardName);
 
         LocalDate todayKst = LocalDate.now(ZoneId.of("Asia/Seoul"));
@@ -36,7 +36,7 @@ public class BoardService {
                                     .isBefore(oneDayBeforeTodayKst))
                             .toList();
 
-                    return BoardResDTO.fromEntity(board, filteredArticles);
+                    return BoardWithArticleResDTO.fromEntity(board, filteredArticles);
                 })
                 .toList();
     }
@@ -45,9 +45,9 @@ public class BoardService {
         return boardRepository.findDistinctNames();
     }
 
-    public Page<BoardResDTO> getPageableBoards(Pageable pageable) {
+    public Page<BoardWithArticleResDTO> getPageableBoards(Pageable pageable) {
         return boardRepository.findAll(pageable)
-                .map(board -> BoardResDTO.fromEntity(board, List.of()));
+                .map(board -> BoardWithArticleResDTO.fromEntity(board, List.of()));
     }
 
 }
