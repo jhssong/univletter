@@ -6,9 +6,11 @@ import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
 import com.jhssong.univletter.domain.subscribe.entity.Subscribe;
 import com.jhssong.univletter.domain.subscribe.service.SubscribeService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,11 +28,17 @@ public class SubscribeController {
         return ResponseEntity.ok(SubscribeResDTO.fromEntity(subscribe));
     }
 
+    @GetMapping("/api/subscribe/all")
+    public ResponseEntity<List<SubscribeResDTO>> getAllSubscribers() {
+        List<SubscribeResDTO> subscribeResDTOS = subscribeService.getAllSubscribers();
+        return ResponseEntity.ok(subscribeResDTOS);
+    }
 
     @DeleteMapping("/api/unsubscribe")
     public ResponseEntity<Void> unsubscribe(@Valid @ModelAttribute SubscribeDelReqDTO reqDTO) {
         subscribeService.unsubscribe(reqDTO);
         return ResponseEntity.ok().build();
     }
+
 
 }
