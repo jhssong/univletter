@@ -1,6 +1,7 @@
 package com.jhssong.univletter.domain.board.service;
 
 import com.jhssong.univletter.domain.article.entity.Article;
+import com.jhssong.univletter.domain.board.dto.BoardResDTO;
 import com.jhssong.univletter.domain.board.dto.BoardWithArticleResDTO;
 import com.jhssong.univletter.domain.board.entity.Board;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
@@ -39,6 +40,11 @@ public class BoardService {
                     return BoardWithArticleResDTO.fromEntity(board, filteredArticles);
                 })
                 .toList();
+    }
+
+    public List<BoardResDTO> getAllBoards() {
+        List<Board> boards = boardRepository.findAll();
+        return boards.stream().map(BoardResDTO::fromEntity).toList();
     }
 
     public List<String> getAllBoardNames() {
