@@ -14,13 +14,13 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping("/api/board/all")
+    @GetMapping("/api/admin/board/all")
     public ResponseEntity<List<BoardResDTO>> getAllBoards() {
         List<BoardResDTO> boardResDTOS = boardService.getAllBoards();
         return ResponseEntity.ok(boardResDTOS);
     }
 
-    @GetMapping("/api/board/names")
+    @GetMapping("/api/admin/board/names")
     public ResponseEntity<List<String>> getAllBoardNames() {
         List<String> boardNames = boardService.getAllBoardNames();
         return ResponseEntity.ok(boardNames);

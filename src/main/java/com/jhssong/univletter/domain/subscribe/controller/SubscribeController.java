@@ -28,7 +28,7 @@ public class SubscribeController {
         return ResponseEntity.ok(SubscribeResDTO.fromEntity(subscribe));
     }
 
-    @GetMapping("/api/subscribe/all")
+    @GetMapping("/api/admin/subscribe/all")
     public ResponseEntity<List<SubscribeResDTO>> getAllSubscribers() {
         List<SubscribeResDTO> subscribeResDTOS = subscribeService.getAllSubscribers();
         return ResponseEntity.ok(subscribeResDTOS);
