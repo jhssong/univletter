@@ -1,23 +1,20 @@
 package com.jhssong.univletter.domain.article.controller;
 
-import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
-import com.jhssong.univletter.domain.article.service.ArticleService;
-import jakarta.validation.Valid;
+import com.jhssong.univletter.domain.article.service.ArticleCrawler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 public class ArticleController {
 
-    private final ArticleService articleService;
+    private final ArticleCrawler articleCrawler;
 
-    @PostMapping("/api/notice")
-    public ResponseEntity<Void> addNotice(@Valid @RequestBody ArticleReqDTO reqDTO) {
-        articleService.addNotice(reqDTO);
+    @PostMapping("/api/admin/testCrawling")
+    public ResponseEntity<Void> testCrawling() {
+        articleCrawler.crawl();
         return ResponseEntity.ok().build();
     }
 }
