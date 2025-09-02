@@ -16,3 +16,7 @@ server:
 admin:
   email: "admin@admin.com"
   password: "admin"
+
+swagger:
+  username: "swagger"
+  password: "swagger"
