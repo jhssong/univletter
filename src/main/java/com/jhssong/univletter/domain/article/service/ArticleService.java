@@ -1,7 +1,5 @@
 package com.jhssong.univletter.domain.article.service;
 
-import static com.jhssong.univletter.domain.article.exception.ArticleExceptionUtils.NoticeAlreadyExists;
-
 import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
 import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
 import com.jhssong.univletter.domain.article.entity.Article;
@@ -32,9 +30,7 @@ public class ArticleService {
         );
         Optional<Article> existing = articleRepository.findByTitleAndWrittenAt(reqDTO.title(), reqDTO.writtenAt());
 
-        if (existing.isPresent()) {
-            throw NoticeAlreadyExists();
-        } else {
+        if (existing.isEmpty()) {
             Article article = Article.create(reqDTO, board);
             articleRepository.save(article);
             log.info("새로운 공지글이 추가되었습니다. (게시판: {}, 분야: {}, 제목: {})", board.getName(), board.getSubName(),
