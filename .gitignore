@@ -37,5 +37,6 @@ out/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+### Editor directories and files ###
 .vscode/
+.DS_Store
