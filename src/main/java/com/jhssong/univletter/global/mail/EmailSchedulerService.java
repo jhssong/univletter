@@ -1,6 +1,7 @@
 package com.jhssong.univletter.global.mail;
 
 import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
+import com.jhssong.univletter.domain.article.service.ArticleCrawler;
 import com.jhssong.univletter.domain.board.dto.BoardWithArticleResDTO;
 import com.jhssong.univletter.domain.board.service.BoardService;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
@@ -24,9 +25,11 @@ public class EmailSchedulerService {
     private final EmailService emailService;
     private final BoardService boardService;
     private final SubscribeService subscribeService;
+    private final ArticleCrawler articleCrawler;
 
     @Scheduled(cron = "0 0 7 * * *")
     public void sendDailyArticle() {
+        articleCrawler.crawl();
         log.info("이메일 전송 스케줄러 시작 - 현재 시간: {}", LocalDateTime.now());
 
         Context context = new Context();

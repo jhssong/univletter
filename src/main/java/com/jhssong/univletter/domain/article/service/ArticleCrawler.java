@@ -85,7 +85,7 @@ public class ArticleCrawler {
                         }
 
                         // 최신 글이면 ArticleReqDTO 객체 생성
-                        ArticleReqDTO article = ArticleReqDTO.builder()
+                        ArticleReqDTO articleReqDTO = ArticleReqDTO.builder()
                                 .title(title)
                                 .link(link)
                                 .views(views)
@@ -97,7 +97,7 @@ public class ArticleCrawler {
 
                         log.debug("분야: {}, 제목: {}, 작성일: {}", subName, title, writtenAt);
 
-                        sendNoticeToServer(article);
+                        articleService.addNotice(articleReqDTO);
                     }
 
                 } catch (IOException e) {
@@ -108,9 +108,5 @@ public class ArticleCrawler {
         }
 
         log.info("크롤링 작업 종료");
-    }
-
-    private void sendNoticeToServer(ArticleReqDTO reqDTO) {
-        articleService.addNotice(reqDTO);
     }
 }
