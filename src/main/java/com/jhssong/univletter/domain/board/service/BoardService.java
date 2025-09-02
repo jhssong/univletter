@@ -9,8 +9,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,11 +47,6 @@ public class BoardService {
 
     public List<String> getAllBoardNames() {
         return boardRepository.findDistinctNames();
-    }
-
-    public Page<BoardWithArticleResDTO> getPageableBoards(Pageable pageable) {
-        return boardRepository.findAll(pageable)
-                .map(board -> BoardWithArticleResDTO.fromEntity(board, List.of()));
     }
 
 }
