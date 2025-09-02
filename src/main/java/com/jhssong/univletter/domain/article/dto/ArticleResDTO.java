@@ -1,5 +1,6 @@
 package com.jhssong.univletter.domain.article.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jhssong.univletter.domain.article.entity.Article;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,6 +42,7 @@ public record ArticleResDTO(
                 .toList();
     }
 
+    @JsonProperty("formattedDate")
     public String getFormattedDate() {
         return this.writtenAt != null ? this.writtenAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) : null;
     }
