@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI swaggerConfig() {
+    public OpenAPI swaggerOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
                         .title("UnivLetter API")
