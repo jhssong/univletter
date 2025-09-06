@@ -91,8 +91,8 @@ public class ArticleCrawler {
                                 .views(views)
                                 .author(author)
                                 .writtenAt(writtenAt)
-                                .boardName("경북대학교 컴퓨터학부")
-                                .boardSubName(subName)
+                                .boardName(board.name())
+                                .boardSubName(board.subName())
                                 .build();
 
                         log.debug("분야: {}, 제목: {}, 작성일: {}", subName, title, writtenAt);

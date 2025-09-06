@@ -26,7 +26,7 @@ public class ArticleService {
     @Transactional
     public void addNotice(ArticleReqDTO reqDTO) {
         Board board = boardRepository.findByNameAndSubName(reqDTO.boardName(), reqDTO.boardSubName()).orElseThrow(
-                BoardExceptionUtils::BoardNotFound
+                () -> BoardExceptionUtils.BoardNotFound(reqDTO.boardName(), reqDTO.boardSubName())
         );
         Optional<Article> existing = articleRepository.findByTitleAndWrittenAt(reqDTO.title(), reqDTO.writtenAt());
 
