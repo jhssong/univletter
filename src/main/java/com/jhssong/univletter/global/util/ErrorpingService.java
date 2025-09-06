@@ -50,4 +50,23 @@ public class ErrorpingService {
                         throwable -> log.warn("Failed to send error to Errorping: {}", throwable.getMessage())
                 );
     }
+
+    public void sendInfo(String message) {
+        Map<String, Object> info = new HashMap<>();
+        info.put("message", message);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("channelId", this.channelId);
+        requestBody.put("info", info);
+
+        this.webClient.post()
+                .uri("")
+                .body(BodyInserters.fromValue(requestBody))
+                .retrieve()
+                .toBodilessEntity()
+                .subscribe(
+                        response -> log.debug("Errorping request sent successfully"),
+                        throwable -> log.warn("Failed to send info to Errorping: {}", throwable.getMessage())
+                );
+    }
 }
