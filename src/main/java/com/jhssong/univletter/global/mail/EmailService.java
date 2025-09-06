@@ -91,7 +91,7 @@ public class EmailService {
         log.info("이메일 전송 스케줄러 종료");
     }
 
-    public void sendTestEmail(String toEmail) {
+    public void testSendingEmail(String toEmail) {
         try {
             sendEmailWithHtmlTemplate(toEmail, "[UnivLetter] 이메일 전송 테스트", new Context());
             log.info("테스트 이메일이 성공적으로 전송되었습니다.");

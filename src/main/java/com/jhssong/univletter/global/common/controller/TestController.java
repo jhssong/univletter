@@ -17,22 +17,23 @@ public class TestController {
     private final ArticleCrawler articleCrawler;
     private final EmailService emailService;
 
+    @PostMapping("/testCrawling")
+    public ResponseEntity<Void> testCrawling() {
+        articleCrawler.crawl();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/testSendingEmail")
+    public ResponseEntity<Void> testSendingEmail(@RequestParam String toEmail) {
+        emailService.testSendingEmail(toEmail);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/sendDailyNewsletterManually")
     public ResponseEntity<Void> sendDailyNewsletterManually() {
         emailService.sendDailyNewsletter();
         return ResponseEntity.ok().build();
     }
+    
 
-    @PostMapping("/testCrawlAndSendNewsletter")
-    public ResponseEntity<Void> testCrawlAndSendNewsletter() {
-        articleCrawler.crawl();
-        emailService.sendDailyNewsletter();
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/sendTestEmail")
-    public ResponseEntity<Void> sendTestEmail(@RequestParam String toEmail) {
-        emailService.sendTestEmail(toEmail);
-        return ResponseEntity.ok().build();
-    }
 }
