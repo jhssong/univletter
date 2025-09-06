@@ -4,6 +4,8 @@ import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
 import com.jhssong.univletter.domain.board.service.BoardService;
 import com.jhssong.univletter.domain.subscribe.entity.Subscribe;
 import com.jhssong.univletter.domain.subscribe.service.SubscribeService;
+import com.jhssong.univletter.global.mail.exception.EmailExceptionUtils;
+import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDate;
@@ -50,7 +52,7 @@ public class EmailService {
 
         log.info("이메일 전송 스케줄러 종료");
     }
-    
+
     private List<ArticleResDTO> fetchArticlesForBoard(String boardName, int timeWindow) {
         return boardService.getBoardWithArticlesByBoardName(boardName, timeWindow).stream()
                 .flatMap(boardWithArticleResDTO -> boardWithArticleResDTO.articleResDTOS().stream())
@@ -76,11 +78,14 @@ public class EmailService {
                     context
             );
             log.info("이메일이 성공적으로 전송되었습니다. (to: {})", subscriber.getEmail());
+        } catch (AuthenticationFailedException e) {
+            throw EmailExceptionUtils.AuthenticationFailedException(subscriber.getEmail(), e.getMessage());
         } catch (MessagingException e) {
-            log.error("이메일 전송 실패 (to: {}): {}", subscriber.getEmail(), e.getMessage(), e);
+            throw EmailExceptionUtils.MessagingException(subscriber.getEmail(), e.getMessage());
         } catch (Exception e) {
-            log.error("이메일 전송 중 오류 발생 (to: {}): {}", subscriber.getEmail(), e.getMessage(), e);
+            throw EmailExceptionUtils.Exception(subscriber.getEmail(), e.getMessage());
         }
+
     }
 
     private void sendEmailWithHtmlTemplate(String to, String subject, Context context)
@@ -101,10 +106,12 @@ public class EmailService {
         try {
             sendEmailWithHtmlTemplate(toEmail, "[UnivLetter] 이메일 전송 테스트", new Context());
             log.info("테스트 이메일이 성공적으로 전송되었습니다.");
+        } catch (AuthenticationFailedException e) {
+            throw EmailExceptionUtils.AuthenticationFailedException(toEmail, e.getMessage());
         } catch (MessagingException e) {
-            log.error("테스트 이메일 전송 실패: {}", e.getMessage(), e);
+            throw EmailExceptionUtils.MessagingException(toEmail, e.getMessage());
         } catch (Exception e) {
-            log.error("테스트 이메일 전송 중 오류 발생: {}", e.getMessage(), e);
+            throw EmailExceptionUtils.Exception(toEmail, e.getMessage());
         }
     }
 }
