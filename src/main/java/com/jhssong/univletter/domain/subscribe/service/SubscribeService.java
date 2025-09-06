@@ -57,4 +57,8 @@ public class SubscribeService {
         return subscribers.stream().map(SubscribeResDTO::fromEntity).toList();
     }
 
+    public List<Subscribe> getAllSubscribes() {
+        return subscribeRepository.findAll();
+    }
+
 }

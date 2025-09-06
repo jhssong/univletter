@@ -19,11 +19,11 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public List<BoardWithArticleResDTO> getBoardWithArticlesByBoardName(String boardName) {
+    public List<BoardWithArticleResDTO> getBoardWithArticlesByBoardName(String boardName, int timeWindow) {
         List<Board> boards = boardRepository.findAllByName(boardName);
 
         LocalDate todayKst = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        LocalDate oneDayBeforeTodayKst = todayKst.minusDays(1);
+        LocalDate oneDayBeforeTodayKst = todayKst.minusDays(timeWindow);
 
         return boards.stream()
                 .map(board -> {

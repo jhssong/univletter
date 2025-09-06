@@ -24,7 +24,7 @@ public class ArticleCrawler {
     private final BoardService boardService;
     private final ArticleService articleService;
 
-    public void crawl() {
+    public void crawl(int timeWindow) {
         log.info("크롤링 작업 시작");
         List<BoardResDTO> boardList = boardService.getAllBoards();
 
@@ -73,7 +73,7 @@ public class ArticleCrawler {
                         }
 
                         // 하루 전보다 오래된 글이면 종료
-                        LocalDate oneDayAgo = LocalDate.now().minusDays(1);
+                        LocalDate oneDayAgo = LocalDate.now().minusDays(timeWindow);
                         if (writtenAt != null && writtenAt.isBefore(oneDayAgo)) {
                             active = false;
                             break;

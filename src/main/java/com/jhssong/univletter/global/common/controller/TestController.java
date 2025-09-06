@@ -18,8 +18,8 @@ public class TestController {
     private final EmailService emailService;
 
     @PostMapping("/testCrawling")
-    public ResponseEntity<Void> testCrawling() {
-        articleCrawler.crawl();
+    public ResponseEntity<Void> testCrawling(@RequestParam int timeWindow) {
+        articleCrawler.crawl(timeWindow);
         return ResponseEntity.ok().build();
     }
 
@@ -30,10 +30,10 @@ public class TestController {
     }
 
     @PostMapping("/sendDailyNewsletterManually")
-    public ResponseEntity<Void> sendDailyNewsletterManually() {
-        emailService.sendDailyNewsletter();
+    public ResponseEntity<Void> sendDailyNewsletterManually(@RequestParam int timeWindow) {
+        emailService.sendDailyNewsletter(timeWindow);
         return ResponseEntity.ok().build();
     }
-    
+
 
 }

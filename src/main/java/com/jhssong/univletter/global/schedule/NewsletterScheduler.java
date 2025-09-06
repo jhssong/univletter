@@ -12,16 +12,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NewsletterScheduler {
 
+    private static final int timeWindow = 1;
+
     private final ArticleCrawler articleCrawler;
     private final EmailService emailService;
 
     @Scheduled(cron = "0 0 6 * * *")
     public void crawlAndSendNewsletter() {
         // 1. Crawling articles
-        articleCrawler.crawl();
+        articleCrawler.crawl(timeWindow);
 
         // 2. Sending mail
-        emailService.sendDailyNewsletter();
+        emailService.sendDailyNewsletter(timeWindow);
     }
 
 }
