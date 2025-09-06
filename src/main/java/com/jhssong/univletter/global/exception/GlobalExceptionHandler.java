@@ -40,7 +40,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
             HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
         ErrorResponse res = ErrorResponse.toResponseEntity(ex, request);
-        errorpingService.sendError(res);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(res);
     }
@@ -49,7 +48,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException ex,
                                                                HttpServletRequest request) {
         ErrorResponse res = ErrorResponse.toResponseEntity(ex, request);
-        errorpingService.sendError(res);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
                 .body(res);
     }
