@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,7 +12,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-@Slf4j
 @Builder
 public record ErrorResponse(
         String title,
@@ -33,7 +31,6 @@ public record ErrorResponse(
     }
 
     public static ErrorResponse toResponseEntity(BaseDomainException ex, WebRequest request) {
-        log.error("에러 발생! {}-{}", ex.getStatus().value(), ex.getMessage());
         return ErrorResponse.builder()
                 .title(ex.getStatus().getReasonPhrase())
                 .status(ex.getStatus().value())
@@ -69,7 +66,6 @@ public record ErrorResponse(
                 })
                 .distinct()
                 .collect(Collectors.joining(", "));
-        log.error("사용자 입력 에러 발생! {}-{}", HttpStatus.BAD_REQUEST.value(), message);
         return ErrorResponse.builder()
                 .title(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -105,7 +101,6 @@ public record ErrorResponse(
     }
 
     public static ErrorResponse toResponseEntity(Exception ex, WebRequest request) {
-        log.error(ex.getMessage(), ex);
         return ErrorResponse.builder()
                 .title(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
