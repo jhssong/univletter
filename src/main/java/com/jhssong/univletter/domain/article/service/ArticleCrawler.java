@@ -49,11 +49,6 @@ public class ArticleCrawler {
                         String number = Optional.ofNullable(row.selectFirst("td.td_num2"))
                                 .map(Element::text).orElse(null);
 
-                        // 카테고리
-                        String categoryText = Optional.ofNullable(row.selectFirst("a.bo_cate_link"))
-                                .map(Element::text).orElse(null);
-                        String subName = categoryText != null ? categoryText : board.subName();
-
                         // 제목 및 링크
                         Element titleLink = row.selectFirst("div.bo_tit a");
                         String title = titleLink != null ? titleLink.text() : null;
@@ -95,7 +90,7 @@ public class ArticleCrawler {
                                 .boardSubName(board.subName())
                                 .build();
 
-                        log.debug("분야: {}, 제목: {}, 작성일: {}", subName, title, writtenAt);
+                        log.debug("분야: {}, 제목: {}, 작성일: {}", board.subName(), title, writtenAt);
 
                         articleService.addNotice(articleReqDTO);
                     }
