@@ -1,6 +1,7 @@
 package com.jhssong.univletter.domain.article.service;
 
 import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
+import com.jhssong.univletter.domain.article.exception.ArticleExceptionUtils;
 import com.jhssong.univletter.domain.board.dto.BoardResDTO;
 import com.jhssong.univletter.domain.board.service.BoardService;
 import java.io.IOException;
@@ -96,8 +97,7 @@ public class ArticleCrawler {
                     }
 
                 } catch (IOException e) {
-                    log.error("크롤링 중 에러 발생! url={}, error={}", url, e.getMessage());
-                    break;
+                    throw ArticleExceptionUtils.CrawlingError(url, e.getMessage());
                 }
             }
         }

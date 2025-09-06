@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class ArticleExceptionUtils {
 
-    public static BusinessException NoticeAlreadyExists() {
-        return new BusinessException(HttpStatus.CONFLICT, "이미 존재하는 공지입니다.");
+    public static BusinessException CrawlingError(String url, String errorMessage) {
+        String message = "크롤링 중 에러가 발생했습니다. url=" + url + ", error=" + errorMessage;
+        return new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 }
