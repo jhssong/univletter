@@ -2,7 +2,7 @@ package com.jhssong.univletter.global.mail;
 
 import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
 import com.jhssong.univletter.domain.board.service.BoardService;
-import com.jhssong.univletter.domain.subscribe.entity.Subscribe;
+import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
 import com.jhssong.univletter.domain.subscribe.service.SubscribeService;
 import com.jhssong.univletter.global.mail.exception.EmailExceptionUtils;
 import jakarta.mail.AuthenticationFailedException;
@@ -31,7 +31,7 @@ public class EmailService {
     private final SpringTemplateEngine templateEngine;
 
     public void sendDailyNewsletter(int timeWindow) {
-        List<Subscribe> subscribers = subscribeService.getAllSubscribes();
+        List<SubscribeResDTO> subscribers = subscribeService.getAllSubscribers();
         List<String> boardNames = boardService.getAllBoardNames();
 
         for (String boardName : boardNames) {
@@ -44,7 +44,7 @@ public class EmailService {
 
             log.info("총 {}개의 공지사항을 전송합니다. ({})", articles.size(), boardName);
 
-            for (Subscribe subscriber : subscribers) {
+            for (SubscribeResDTO subscriber : subscribers) {
                 Context context = buildNewsletterContext(articles, subscriber);
                 sendNewsletterToSubscriber(subscriber, boardName, context);
             }
@@ -59,31 +59,31 @@ public class EmailService {
                 .toList();
     }
 
-    private Context buildNewsletterContext(List<ArticleResDTO> articles, Subscribe subscriber) {
+    private Context buildNewsletterContext(List<ArticleResDTO> articles, SubscribeResDTO subscriber) {
         String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일"));
         String unsubscribeURL = "https://univletter.jhssong.com/unsubscribe/";
 
         Context context = new Context();
         context.setVariable("mainTitle", todayDate + " 공지사항");
         context.setVariable("articles", articles);
-        context.setVariable("unsubscribeLink", unsubscribeURL + subscriber.getToken());
+        context.setVariable("unsubscribeLink", unsubscribeURL + subscriber.token());
         return context;
     }
 
-    private void sendNewsletterToSubscriber(Subscribe subscriber, String boardName, Context context) {
+    private void sendNewsletterToSubscriber(SubscribeResDTO subscriber, String boardName, Context context) {
         try {
             sendEmailWithHtmlTemplate(
-                    subscriber.getEmail(),
+                    subscriber.email(),
                     "[UnivLetter] " + boardName + " 공지사항",
                     context
             );
-            log.info("이메일이 성공적으로 전송되었습니다. (to: {})", subscriber.getEmail());
+            log.info("이메일이 성공적으로 전송되었습니다. (to: {})", subscriber.email());
         } catch (AuthenticationFailedException e) {
-            throw EmailExceptionUtils.AuthenticationFailedException(subscriber.getEmail(), e.getMessage());
+            throw EmailExceptionUtils.AuthenticationFailedException(subscriber.email(), e.getMessage());
         } catch (MessagingException e) {
-            throw EmailExceptionUtils.MessagingException(subscriber.getEmail(), e.getMessage());
+            throw EmailExceptionUtils.MessagingException(subscriber.email(), e.getMessage());
         } catch (Exception e) {
-            throw EmailExceptionUtils.Exception(subscriber.getEmail(), e.getMessage());
+            throw EmailExceptionUtils.Exception(subscriber.email(), e.getMessage());
         }
 
     }

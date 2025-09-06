@@ -7,11 +7,9 @@ import java.time.LocalDate;
 import lombok.Builder;
 
 @Builder
-public record SubscribeResDTO(
+public record SubscribeSuccessResDTO(
         @NotBlank(message = "이메일")
         String email,
-        @NotBlank(message = "토큰")
-        String token,
         @NotNull(message = "구독 여부")
         boolean isSubscribed,
         @NotNull(message = "구독일")
@@ -19,10 +17,9 @@ public record SubscribeResDTO(
         @NotNull(message = "구독해지일")
         LocalDate unsubscribedDate
 ) {
-    public static SubscribeResDTO fromEntity(Subscribe subscribe) {
-        return SubscribeResDTO.builder()
+    public static SubscribeSuccessResDTO fromEntity(Subscribe subscribe) {
+        return SubscribeSuccessResDTO.builder()
                 .email(subscribe.getEmail())
-                .token(subscribe.getToken())
                 .isSubscribed(subscribe.getUnsubscribedAt() == null)
                 .subscribedDate(subscribe.getCreatedAt().toLocalDate())
                 .unsubscribedDate(

@@ -3,6 +3,7 @@ package com.jhssong.univletter.domain.subscribe.controller;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeDelReqDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeReqDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
+import com.jhssong.univletter.domain.subscribe.dto.SubscribeSuccessResDTO;
 import com.jhssong.univletter.domain.subscribe.entity.Subscribe;
 import com.jhssong.univletter.domain.subscribe.service.SubscribeService;
 import jakarta.validation.Valid;
@@ -23,9 +24,9 @@ public class SubscribeController {
     private final SubscribeService subscribeService;
 
     @PostMapping("/api/subscribe")
-    public ResponseEntity<SubscribeResDTO> subscribe(@Valid @RequestBody SubscribeReqDTO reqDTO) {
+    public ResponseEntity<SubscribeSuccessResDTO> subscribe(@Valid @RequestBody SubscribeReqDTO reqDTO) {
         Subscribe subscribe = subscribeService.subscribe(reqDTO);
-        return ResponseEntity.ok(SubscribeResDTO.fromEntity(subscribe));
+        return ResponseEntity.ok(SubscribeSuccessResDTO.fromEntity(subscribe));
     }
 
     @GetMapping("/api/admin/subscribe/all")
