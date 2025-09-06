@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,6 +27,12 @@ public class TestController {
     public ResponseEntity<Void> testCrawlAndSendNewsletter() {
         articleCrawler.crawl();
         emailService.sendDailyNewsletter();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/sendTestEmail")
+    public ResponseEntity<Void> sendTestEmail(@RequestParam String toEmail) {
+        emailService.sendTestEmail(toEmail);
         return ResponseEntity.ok().build();
     }
 }
