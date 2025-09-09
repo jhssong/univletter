@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -49,6 +50,11 @@ public class ArticleCrawler {
                         // 게시글 번호
                         String number = Optional.ofNullable(row.selectFirst("td.td_num2"))
                                 .map(Element::text).orElse(null);
+
+                        // 컴퓨터학부 일반공지 예외처리 (번호가 '공지'가 아닌 경우만 크롤링)
+                        if (number != null && board.subName().equals("일반공지") && !StringUtils.isNumeric(number)) {
+                            continue;
+                        }
 
                         // 제목 및 링크
                         Element titleLink = row.selectFirst("div.bo_tit a");
