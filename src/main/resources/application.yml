@@ -25,7 +25,6 @@ jwt:
 errorping:
   channelId: ${ERRORPING_CHANNEL_ID}
   apiKey: ${ERRORPING_API_KEY}
-  url: ${ERRORPING_URL}
 
 springdoc:
   api-docs:
