@@ -17,6 +17,8 @@ FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
+ENV TZ=Asia/Seoul
+
 COPY --from=build /app/build/libs/*.jar app.jar
 
 ENV SPRING_PROFILES_ACTIVE=prod
