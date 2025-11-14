@@ -43,7 +43,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     // Errorping
-    implementation 'com.github.jhssong:errorping-springboot-lib:v0.0.3'
+    implementation 'com.github.jhssong:errorping-springboot-lib:v0.0.4.4'
 }
 
 tasks.named('test') {

@@ -3,13 +3,6 @@ spring:
     hibernate:
       ddl-auto: create
 
-  mail:
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-
 server:
   port: 8080
 

@@ -2,6 +2,9 @@ spring:
   profiles:
     active: local
 
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: ${DB_URL}
@@ -18,13 +21,27 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 jwt:
   secret: ${JWT_SECRET_KEY}
 
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+
 errorping:
-  channelId: ${ERRORPING_CHANNEL_ID}
   apiKey: ${ERRORPING_API_KEY}
+  startupShutdownNotification:
+    enabled: ${ERRORPING_STARTUP_SHUTDOWN_NOTIFICATION}
+    startup-message: "Univletter 서버가 실행되었습니다."
+    shutdown-message: "Univletter 서버가 종료되었습니다."
 
 springdoc:
   api-docs:

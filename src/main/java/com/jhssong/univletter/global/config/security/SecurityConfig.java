@@ -1,5 +1,6 @@
 package com.jhssong.univletter.global.config.security;
 
+import com.jhssong.univletter.global.config.security.auth.exception.SecurityExceptionHandler;
 import com.jhssong.univletter.global.config.security.auth.service.AuthFilter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,11 @@ import org.springframework.web.cors.CorsConfiguration;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final SecurityExceptionHandler securityExceptionHandler;
     @Value("${jwt.secret}")
     String secretKey;
-
     @Value("${swagger.username}")
     String swaggerUsername;
-
     @Value("${swagger.password}")
     String swaggerPassword;
 
@@ -76,6 +76,6 @@ public class SecurityConfig {
 
     @Bean
     public AuthFilter authFilter() {
-        return new AuthFilter(secretKey);
+        return new AuthFilter(secretKey, securityExceptionHandler);
     }
 }

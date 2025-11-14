@@ -1,5 +1,7 @@
 package com.jhssong.univletter.global.config.security.auth.service;
 
+import com.jhssong.errorping.exception.BaseDomainException;
+import com.jhssong.univletter.global.config.security.auth.exception.SecurityExceptionHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,41 +19,46 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class AuthFilter extends OncePerRequestFilter {
 
     private final String secretKey;
+    private final SecurityExceptionHandler securityExceptionHandler;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+        try {
+            String authorizationHeader = request.getHeader("Authorization");
 
-        String authorizationHeader = request.getHeader("Authorization");
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String token = authorizationHeader.substring(7);
+
+            if (AuthUtil.isExpired(token, secretKey)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String email = AuthUtil.getEmail(token, secretKey);
+            if (email != null) {
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(email, null,
+                                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                        );
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
+
             filterChain.doFilter(request, response);
-            return;
+        } catch (BaseDomainException e) {
+            SecurityContextHolder.clearContext();
+            securityExceptionHandler.handle(e, request, response);
         }
-
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token = authorizationHeader.substring(7);
-
-        if (AuthUtil.isExpired(token, secretKey)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String email = AuthUtil.getEmail(token, secretKey);
-        if (email != null) {
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(email, null,
-                            List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
-                    );
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        }
-
-        filterChain.doFilter(request, response);
     }
 }

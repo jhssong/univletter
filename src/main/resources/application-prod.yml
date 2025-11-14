@@ -8,13 +8,6 @@ spring:
       hibernate:
         format_sql: true
 
-  mail:
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-
   devtools:
     add-properties: false
 
