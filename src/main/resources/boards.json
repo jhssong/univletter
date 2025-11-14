@@ -1,5 +1,10 @@
 [
   {
+    "name": "경북대학교",
+    "subName": "공지사항",
+    "link": "https://knu.ac.kr/wbbs/wbbs/bbs/btin/list.action?bbs_cde=1&menu_idx=67"
+  },
+  {
     "name": "경북대학교 컴퓨터학부",
     "subName": "일반공지",
     "link": "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&sca=일반공지"
