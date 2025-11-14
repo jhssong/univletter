@@ -2,16 +2,12 @@ package com.jhssong.univletter.domain.article.service;
 
 import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
 import com.jhssong.univletter.domain.article.exception.ArticleExceptionUtils;
-import com.jhssong.univletter.domain.board.dto.BoardResDTO;
-import com.jhssong.univletter.domain.board.service.BoardService;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,91 +19,88 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ArticleCrawler {
 
-    private final BoardService boardService;
     private final ArticleService articleService;
 
     public void crawl(int timeWindow) {
         log.info("크롤링 작업 시작");
-        List<BoardResDTO> boardList = boardService.getAllBoards();
+        crawlKNUCSE(timeWindow);
+        log.info("크롤링 작업 종료");
+    }
 
-        for (BoardResDTO board : boardList) {
-            boolean active = true;
-            int pageCnt = 1;
+    private void crawlKNUCSE(int timeWindow) {
+        String boardName = "경북대학교 컴퓨터학부";
+        String baseURL = "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&page=";
 
-            while (active) {
-                String url = board.link() + "&page=" + pageCnt;
-                pageCnt++;
+        boolean active = true;
+        int pageCnt = 1;
 
-                try {
-                    Document doc = Jsoup.connect(url).get();
-                    Elements rows = doc.select("tbody tr");
+        while (active) {
+            String url = baseURL + pageCnt;
+            pageCnt++;
 
-                    if (rows.isEmpty()) {
+            try {
+                Document doc = Jsoup.connect(url).get();
+                Elements rows = doc.select("tbody tr");
+
+                if (rows.isEmpty()) {
+                    break;
+                }
+
+                for (Element row : rows) {
+                    // 게시판
+                    String subName = Optional.ofNullable(row.selectFirst("td.td_subject a.bo_cate_link"))
+                            .map(Element::text).orElse(null);
+
+                    // 제목 및 링크
+                    Element titleLink = row.selectFirst("div.bo_tit a");
+                    String title = titleLink != null ? titleLink.text() : null;
+                    String link = titleLink != null ? titleLink.attr("href") : null;
+
+                    // 작성자
+                    String author = Optional.ofNullable(row.selectFirst("td.td_name span.sv_member"))
+                            .map(Element::text).orElse(null);
+
+                    // 조회수
+                    Integer views = Optional.ofNullable(row.selectFirst("td.td_num"))
+                            .map(e -> Integer.parseInt(e.text().trim()))
+                            .orElse(0);
+
+                    // 작성일
+                    String dateString = Optional.ofNullable(row.selectFirst("td.td_datetime"))
+                            .map(Element::text).orElse(null);
+
+                    LocalDate writtenAt = null;
+                    if (dateString != null) {
+                        writtenAt = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    }
+
+                    // 하루 전보다 오래된 글이면 종료
+                    LocalDate oneDayAgo = LocalDate.now().minusDays(timeWindow);
+                    if (writtenAt != null && writtenAt.isBefore(oneDayAgo)) {
+                        active = false;
                         break;
                     }
 
-                    for (Element row : rows) {
-                        // 게시글 번호
-                        String number = Optional.ofNullable(row.selectFirst("td.td_num2"))
-                                .map(Element::text).orElse(null);
+                    // 최신 글이면 ArticleReqDTO 객체 생성
+                    ArticleReqDTO articleReqDTO = ArticleReqDTO.builder()
+                            .title(title)
+                            .link(link)
+                            .views(views)
+                            .author(author)
+                            .writtenAt(writtenAt)
+                            .boardName(boardName)
+                            .boardSubName(subName)
+                            .build();
 
-                        // 컴퓨터학부 일반공지 예외처리 (번호가 '공지'가 아닌 경우만 크롤링)
-                        if (number != null && board.subName().equals("일반공지") && !StringUtils.isNumeric(number)) {
-                            continue;
-                        }
+                    log.info("분야: {}, 제목: {}, 작성일: {}", subName, title, writtenAt);
 
-                        // 제목 및 링크
-                        Element titleLink = row.selectFirst("div.bo_tit a");
-                        String title = titleLink != null ? titleLink.text() : null;
-                        String link = titleLink != null ? titleLink.attr("href") : null;
-
-                        // 작성자
-                        String author = Optional.ofNullable(row.selectFirst("td.td_name span.sv_member"))
-                                .map(Element::text).orElse(null);
-
-                        // 조회수
-                        Integer views = Optional.ofNullable(row.selectFirst("td.td_num"))
-                                .map(e -> Integer.parseInt(e.text().trim()))
-                                .orElse(0);
-
-                        // 작성일
-                        String dateString = Optional.ofNullable(row.selectFirst("td.td_datetime"))
-                                .map(Element::text).orElse(null);
-
-                        LocalDate writtenAt = null;
-                        if (dateString != null) {
-                            writtenAt = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        }
-
-                        // 하루 전보다 오래된 글이면 종료
-                        LocalDate oneDayAgo = LocalDate.now().minusDays(timeWindow);
-                        if (writtenAt != null && writtenAt.isBefore(oneDayAgo)) {
-                            active = false;
-                            break;
-                        }
-
-                        // 최신 글이면 ArticleReqDTO 객체 생성
-                        ArticleReqDTO articleReqDTO = ArticleReqDTO.builder()
-                                .title(title)
-                                .link(link)
-                                .views(views)
-                                .author(author)
-                                .writtenAt(writtenAt)
-                                .boardName(board.name())
-                                .boardSubName(board.subName())
-                                .build();
-
-                        log.debug("분야: {}, 제목: {}, 작성일: {}", board.subName(), title, writtenAt);
-
-                        articleService.addNotice(articleReqDTO);
-                    }
-
-                } catch (IOException e) {
-                    throw ArticleExceptionUtils.CrawlingError(url, e.getMessage());
+                    articleService.addNotice(articleReqDTO);
                 }
+
+            } catch (IOException e) {
+                throw ArticleExceptionUtils.CrawlingError(url, e.getMessage());
             }
         }
 
-        log.info("크롤링 작업 종료");
     }
 }
