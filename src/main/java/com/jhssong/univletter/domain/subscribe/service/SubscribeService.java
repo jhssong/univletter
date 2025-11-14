@@ -40,8 +40,7 @@ public class SubscribeService {
 
     @Transactional
     public void unsubscribe(SubscribeDelReqDTO reqDTO) {
-        Optional<Subscribe> existing = subscribeRepository.findByEmailAndTokenAndUnsubscribedAtIsNull(reqDTO.email(),
-                reqDTO.token());
+        Optional<Subscribe> existing = subscribeRepository.findByTokenAndUnsubscribedAtIsNull(reqDTO.token());
         Subscribe subscribe;
         if (existing.isPresent()) {
             subscribe = existing.get();

@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     Optional<Subscribe> findByEmail(String email);
 
-    Optional<Subscribe> findByEmailAndTokenAndUnsubscribedAtIsNull(String email, String token);
+    Optional<Subscribe> findByTokenAndUnsubscribedAtIsNull(String token);
 }
