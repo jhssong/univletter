@@ -13,6 +13,7 @@ import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,8 @@ public class EmailService {
             if (articles.isEmpty()) {
                 continue;
             }
+            articles.sort(Comparator.comparing(ArticleResDTO::writtenAt));
+
             log.info("이메일({})로 {}개의 공지사항을 전송합니다.", subscribe.getEmail(), articles.size());
 
             Context context = buildNewsletterContext(articles, subscribe);
