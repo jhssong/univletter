@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import lombok.Builder;
 
 @Builder
@@ -25,21 +24,20 @@ public record ArticleResDTO(
         String boardSubName
 ) {
     public static ArticleResDTO fromEntity(Article article) {
+        String boardName = article.getBoard().getName();
+        String[] boardNameArr = boardName.split(" ");
+        if (boardNameArr.length > 1) {
+            boardName = boardNameArr[1];
+        }
         return ArticleResDTO.builder()
                 .title(article.getTitle())
                 .link(article.getLink())
                 .views(article.getViews())
                 .author(article.getAuthor())
                 .writtenAt(article.getWrittenAt())
-                .boardName(article.getBoard().getName())
+                .boardName(boardName)
                 .boardSubName(article.getBoard().getSubName())
                 .build();
-    }
-
-    public static List<ArticleResDTO> fromEntity(List<Article> articles) {
-        return articles.stream()
-                .map(ArticleResDTO::fromEntity)
-                .toList();
     }
 
     @JsonProperty("formattedDate")
