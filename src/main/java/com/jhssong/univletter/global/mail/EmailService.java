@@ -1,15 +1,18 @@
 package com.jhssong.univletter.global.mail;
 
 import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
-import com.jhssong.univletter.domain.board.service.BoardService;
-import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
-import com.jhssong.univletter.domain.subscribe.service.SubscribeService;
+import com.jhssong.univletter.domain.article.service.ArticleService;
+import com.jhssong.univletter.domain.subscribe.entity.Subscribe;
+import com.jhssong.univletter.domain.subscribe.repository.SubscribeRepository;
+import com.jhssong.univletter.domain.subscribeBoard.entity.SubscribeBoard;
+import com.jhssong.univletter.domain.subscribeBoard.repository.SubscribeBoardRepository;
 import com.jhssong.univletter.global.mail.exception.EmailExceptionUtils;
 import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,69 +26,68 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
+    private final SubscribeRepository subscribeRepository;
+    private final SubscribeBoardRepository subscribeBoardRepository;
 
-    private final BoardService boardService;
-    private final SubscribeService subscribeService;
+    private final ArticleService articleService;
 
     private final JavaMailSender emailSender;
     private final SpringTemplateEngine templateEngine;
 
     public void sendDailyNewsletter(int timeWindow) {
-        List<SubscribeResDTO> subscribers = subscribeService.getAllSubscribers();
-        List<String> boardNames = boardService.getAllBoardNames();
+        List<Subscribe> subscribes = subscribeRepository.findAll();
 
-        for (String boardName : boardNames) {
-            List<ArticleResDTO> articles = fetchArticlesForBoard(boardName, timeWindow);
+        for (Subscribe subscribe : subscribes) {
+            List<SubscribeBoard> subscribeBoards = subscribeBoardRepository.findAllBySubscribeWithBoard(subscribe);
+
+            // Get article by Boards
+            List<ArticleResDTO> articles = new ArrayList<>();
+            for (SubscribeBoard subscribeBoard : subscribeBoards) {
+                System.out.println("EmailService: board: " + subscribeBoard.getBoard().getName());
+                List<ArticleResDTO> article = articleService.fetchArticlesForBoard(subscribeBoard.getBoard(),
+                        timeWindow);
+                articles.addAll(article);
+            }
 
             if (articles.isEmpty()) {
-                log.info("전송할 공지사항이 없어 이메일을 전송하지 않습니다. ({})", boardName);
                 continue;
             }
+            log.info("이메일({})로 {}개의 공지사항을 전송합니다.", subscribe.getEmail(), articles.size());
 
-            log.info("총 {}개의 공지사항을 전송합니다. ({})", articles.size(), boardName);
-
-            for (SubscribeResDTO subscriber : subscribers) {
-                Context context = buildNewsletterContext(articles, subscriber);
-                sendNewsletterToSubscriber(subscriber, boardName, context);
-            }
+            Context context = buildNewsletterContext(articles, subscribe);
+            sendNewsletterToSubscriber(subscribe, articles.size(), context);
         }
 
         log.info("이메일 전송 스케줄러 종료");
     }
 
-    private List<ArticleResDTO> fetchArticlesForBoard(String boardName, int timeWindow) {
-        return boardService.getBoardWithArticlesByBoardName(boardName, timeWindow).stream()
-                .flatMap(boardWithArticleResDTO -> boardWithArticleResDTO.articleResDTOS().stream())
-                .toList();
-    }
-
-    private Context buildNewsletterContext(List<ArticleResDTO> articles, SubscribeResDTO subscriber) {
+    private Context buildNewsletterContext(List<ArticleResDTO> articles, Subscribe subscriber) {
         String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일"));
         String unsubscribeURL = "https://univletter.jhssong.com/unsubscribe/";
 
         Context context = new Context();
         context.setVariable("mainTitle", todayDate + " 공지사항");
         context.setVariable("articles", articles);
-        context.setVariable("unsubscribeLink", unsubscribeURL + subscriber.token());
+        context.setVariable("unsubscribeLink", unsubscribeURL + subscriber.getToken());
         return context;
     }
 
-    private void sendNewsletterToSubscriber(SubscribeResDTO subscriber, String boardName, Context context) {
+    private void sendNewsletterToSubscriber(Subscribe subscriber, int articleSize, Context context) {
         try {
+            String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일"));
             sendEmailWithHtmlTemplate(
-                    subscriber.email(),
-                    "[UnivLetter] " + boardName + " 공지사항",
+                    subscriber.getEmail(),
+                    "[UnivLetter] " + articleSize + "개의 새로운 공지사항",
                     context
             );
-            log.info("이메일이 성공적으로 전송되었습니다. (to: {})", subscriber.email());
+            log.info("이메일이 성공적으로 전송되었습니다. (to: {})", subscriber.getEmail());
         } catch (AuthenticationFailedException e) {
-            throw EmailExceptionUtils.AuthenticationFailedException(subscriber.email(), e.getMessage());
+            throw EmailExceptionUtils.AuthenticationFailedException(subscriber.getEmail(), e.getMessage());
         } catch (MessagingException e) {
-            throw EmailExceptionUtils.MessagingException(subscriber.email(), e.getMessage());
+            throw EmailExceptionUtils.MessagingException(subscriber.getEmail(), e.getMessage());
         } catch (Exception e) {
-            throw EmailExceptionUtils.Exception(subscriber.email(), e.getMessage());
+            throw EmailExceptionUtils.Exception(subscriber.getEmail(), e.getMessage());
         }
-
     }
 
     private void sendEmailWithHtmlTemplate(String to, String subject, Context context)
@@ -104,7 +106,8 @@ public class EmailService {
 
     public void testSendingEmail(String toEmail) {
         try {
-            sendEmailWithHtmlTemplate(toEmail, "[UnivLetter] 이메일 전송 테스트", new Context());
+            String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MM월 dd일"));
+            sendEmailWithHtmlTemplate(toEmail, "[UnivLetter] 이메일 전송 테스트 " + todayDate, new Context());
             log.info("테스트 이메일이 성공적으로 전송되었습니다.");
         } catch (AuthenticationFailedException e) {
             throw EmailExceptionUtils.AuthenticationFailedException(toEmail, e.getMessage());

@@ -7,6 +7,8 @@ import com.jhssong.univletter.domain.article.repository.ArticleRepository;
 import com.jhssong.univletter.domain.board.entity.Board;
 import com.jhssong.univletter.domain.board.exception.BoardExceptionUtils;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,17 @@ public class ArticleService {
     public List<ArticleResDTO> getAllArticles() {
         List<Article> articles = articleRepository.findAll();
         return articles.stream().map(ArticleResDTO::fromEntity).toList();
+    }
 
+    public List<ArticleResDTO> fetchArticlesForBoard(Board board, int timeWindow) {
+        LocalDate todayKst = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        LocalDate oneDayBeforeTodayKst = todayKst.minusDays(timeWindow);
+
+        List<Article> articles = articleRepository.findAllByBoard(board);
+        return articles.stream()
+                .filter(article -> article.getWrittenAt() != null && !article.getWrittenAt()
+                        .isBefore(oneDayBeforeTodayKst))
+                .map(ArticleResDTO::fromEntity)
+                .toList();
     }
 }

@@ -2,6 +2,7 @@ package com.jhssong.univletter.domain.board.entity;
 
 import com.jhssong.univletter.domain.article.entity.Article;
 import com.jhssong.univletter.domain.board.dto.BoardJsonDTO;
+import com.jhssong.univletter.domain.subscribeBoard.entity.SubscribeBoard;
 import com.jhssong.univletter.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -31,6 +32,9 @@ public class Board extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String link;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SubscribeBoard> subscribeBoards;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Article> articles;
