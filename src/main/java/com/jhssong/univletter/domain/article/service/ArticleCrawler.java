@@ -27,6 +27,7 @@ public class ArticleCrawler {
         log.info("크롤링 작업 시작");
         crawlKNU(timeWindow);
         crawlKNUCSE(timeWindow);
+        crawlKNUME(timeWindow);
         log.info("크롤링 작업 종료");
     }
 
@@ -197,6 +198,74 @@ public class ArticleCrawler {
                 throw ArticleExceptionUtils.CrawlingError(url, e.getMessage());
             }
         }
+    }
 
+    private void crawlKNUME(int timeWindow) {
+        String boardName = "경북대학교 기계공학부";
+        String baseURL = "https://home.knu.ac.kr";
+        String subName = "학부 공지사항";
+
+        boolean active = true;
+
+        while (active) {
+            String url = baseURL + "/HOME/me/sub.htm?nav_code=me1623370438";
+
+            try {
+                Document doc = Jsoup.connect(url).get();
+                Elements rows = doc.select("tbody tr");
+
+                if (rows.isEmpty()) {
+                    break;
+                }
+
+                for (Element row : rows) {
+                    // 게시글 번호
+                    String number = Optional.ofNullable(row.selectFirst("td.num"))
+                            .map(Element::text).orElse(null);
+
+                    // 번호가 '공지'가 아닌 경우만 크롤링
+                    if (!StringUtils.isNumeric(number)) {
+                        continue;
+                    }
+
+                    // 제목 및 링크
+                    Element titleLink = row.selectFirst("td.subject a");
+                    String title = titleLink != null ? titleLink.text() : null;
+                    String href = titleLink != null ? titleLink.attr("href") : null;
+                    String link = baseURL + href;
+
+                    // 작성자
+                    String author = Optional.ofNullable(row.selectFirst("td.writer"))
+                            .map(Element::text).orElse(null);
+
+                    // 조회수
+                    Integer views = Optional.ofNullable(row.selectFirst("td.hit"))
+                            .map(e -> Integer.parseInt(e.text().trim()))
+                            .orElse(0);
+
+                    // 작성일
+                    String dateString = Optional.ofNullable(row.selectFirst("td.date"))
+                            .map(Element::text).orElse(null);
+
+                    // null check
+                    if (title == null || author == null || dateString == null) {
+                        log.warn("경북대학교 기계공학부 공지사항 크롤링 중 null 데이터가 발견됨");
+                        active = false;
+                        break;
+                    }
+
+                    LocalDate writtenAt = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                    if (!checkDateAndSaveArticle(timeWindow, writtenAt, title, link, views, author, boardName,
+                            subName)) {
+                        active = false;
+                        break;
+                    }
+                }
+
+            } catch (IOException e) {
+                throw ArticleExceptionUtils.CrawlingError(url, e.getMessage());
+            }
+        }
     }
 }
