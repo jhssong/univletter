@@ -37,11 +37,7 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
 
 errorping:
-  apiKey: ${ERRORPING_API_KEY}
-  startupShutdownNotification:
-    enabled: ${ERRORPING_STARTUP_SHUTDOWN_NOTIFICATION}
-    startup-message: "Univletter 서버가 실행되었습니다."
-    shutdown-message: "Univletter 서버가 종료되었습니다."
+  discord-webhook-url: ${DISCORD_WEBHOOK_URL}
 
 springdoc:
   api-docs:

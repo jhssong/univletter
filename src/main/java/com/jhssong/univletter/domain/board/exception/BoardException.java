@@ -1,10 +1,10 @@
 package com.jhssong.univletter.domain.board.exception;
 
-import com.jhssong.errorping.exception.BaseDomainException;
+import com.jhssong.univletter.global.exception.CustomException;
 import org.springframework.http.HttpStatus;
 
-public class BoardException extends BaseDomainException {
-    public BoardException(HttpStatus status, String message) {
-        super(status, message);
+public class BoardException extends CustomException {
+    public BoardException(HttpStatus status, String title, String message, boolean shouldAlert) {
+        super(status, title, message, shouldAlert);
     }
 }

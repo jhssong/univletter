@@ -1,9 +1,9 @@
 package com.jhssong.univletter.domain.subscribe.service;
 
+import static com.jhssong.univletter.domain.board.exception.BoardExceptionUtils.BoardNotFound;
 import static com.jhssong.univletter.domain.subscribe.exception.SubscribeExceptionUtils.SubscriptionNotFound;
 
 import com.jhssong.univletter.domain.board.entity.Board;
-import com.jhssong.univletter.domain.board.exception.BoardExceptionUtils;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeDelReqDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeReqDTO;
@@ -47,7 +47,7 @@ public class SubscribeService {
         // 게시판 별 구독 설정
         for (Long boardId : reqDTO.boardIds()) {
             Board board = boardRepository.findById(boardId)
-                    .orElseThrow(() -> BoardExceptionUtils.BoardNotFound("N/A", "N/A"));
+                    .orElseThrow(() -> BoardNotFound("N/A", "N/A"));
 
             boolean alreadyLinked = subscribe.getSubscribeBoards().stream()
                     .anyMatch(sb -> sb.getBoard().getId().equals(boardId));

@@ -1,4 +1,4 @@
-package com.jhssong.univletter.global.config.security.auth.exception;
+package com.jhssong.univletter.global.exception;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -6,19 +6,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jhssong.errorping.ErrorpingService;
-import com.jhssong.errorping.exception.BaseDomainException;
+import com.jhssong.errorping.exception.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -29,27 +26,12 @@ public class SecurityExceptionHandler {
     private static final Logger EXCEPTION_DETAIL_LOGGER = getLogger("ERROR_DETAIL_LOGGER");
     private final ErrorpingService errorpingService;
 
-    private ProblemDetail createProblemDetail(HttpStatus status,
-                                              String detail,
-                                              HttpServletRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
-        problem.setType(URI.create("about:blank"));
-        problem.setTitle(status.getReasonPhrase());
-        problem.setInstance(URI.create(request.getRequestURI()));
-        problem.setProperty("method", request.getMethod());
-        problem.setProperty("timestamp", ZonedDateTime.now().toOffsetDateTime().toString());
-        return problem;
-    }
-
-    private String convertProblemDetailToMap(ProblemDetail problemDetail) throws JsonProcessingException {
+    private String convertErrorResponseToMap(ErrorResponse er) throws JsonProcessingException {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("type", problemDetail.getType());
-        body.put("title", problemDetail.getTitle());
-        body.put("status", problemDetail.getStatus());
-        body.put("detail", problemDetail.getDetail());
-        body.put("instance", problemDetail.getInstance());
-        body.put("method", problemDetail.getProperties().get("method"));
-        body.put("timestamp", problemDetail.getProperties().get("timestamp").toString());
+        body.put("title", er.getTitle());
+        body.put("status", er.getStatus());
+        body.put("message", er.getMessage());
+        body.put("timestamp", LocalDateTime.now().toString());
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper.writeValueAsString(body);
@@ -68,31 +50,35 @@ public class SecurityExceptionHandler {
         );
     }
 
-    public void handle(BaseDomainException ex,
+    public void handle(CustomException ex,
                        HttpServletRequest request,
                        HttpServletResponse response) throws IOException {
-        ProblemDetail problem = createProblemDetail(ex.getStatus(), ex.getMessage(), request);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(ex.getStatus())
+                .title(ex.getTitle())
+                .message(ex.getMessage())
+                .build();
         if (ex.getStatus().is5xxServerError()) {
-            log.error("[{}] status={} method={} uri={} message={}",
-                    ex.getClass().getSimpleName(),
+            log.error("[CustomException] status={} method={} uri={} title={} message={}",
                     ex.getStatus().value(),
                     request.getMethod(),
                     request.getRequestURI(),
+                    ex.getTitle(),
                     ex.getMessage());
             logDetailedException(ex);
-            errorpingService.sendError(problem);
+            errorpingService.sendErrorToDiscord(errorResponse, request);
         } else {
-            log.warn("[{}] status={} method={} uri={} message={}",
-                    ex.getClass().getSimpleName(),
+            log.warn("[CustomException] status={} method={} uri={} title={} message={}",
                     ex.getStatus().value(),
                     request.getMethod(),
                     request.getRequestURI(),
+                    ex.getTitle(),
                     ex.getMessage());
         }
 
         SecurityContextHolder.clearContext();
-        response.setStatus(problem.getStatus());
+        response.setStatus(errorResponse.getStatus().value());
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(convertProblemDetailToMap(problem));
+        response.getWriter().write(convertErrorResponseToMap(errorResponse));
     }
 }

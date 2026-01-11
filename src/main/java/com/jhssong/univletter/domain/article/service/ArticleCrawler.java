@@ -1,7 +1,8 @@
 package com.jhssong.univletter.domain.article.service;
 
+import static com.jhssong.univletter.domain.article.exception.ArticleExceptionUtils.CrawlingError;
+
 import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
-import com.jhssong.univletter.domain.article.exception.ArticleExceptionUtils;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -131,7 +132,8 @@ public class ArticleCrawler {
                 }
 
             } catch (IOException e) {
-                throw ArticleExceptionUtils.CrawlingError(url, e.getMessage());
+                throw CrawlingError(url, e.getMessage());
+
             }
         }
     }
@@ -195,7 +197,7 @@ public class ArticleCrawler {
                 }
 
             } catch (IOException e) {
-                throw ArticleExceptionUtils.CrawlingError(url, e.getMessage());
+                throw CrawlingError(url, e.getMessage());
             }
         }
     }
@@ -264,7 +266,7 @@ public class ArticleCrawler {
                 }
 
             } catch (IOException e) {
-                throw ArticleExceptionUtils.CrawlingError(url, e.getMessage());
+                throw CrawlingError(url, e.getMessage());
             }
         }
     }

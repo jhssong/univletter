@@ -1,7 +1,7 @@
 package com.jhssong.univletter.global.config.security.auth.service;
 
-import com.jhssong.errorping.exception.BaseDomainException;
-import com.jhssong.univletter.global.config.security.auth.exception.SecurityExceptionHandler;
+import com.jhssong.univletter.global.exception.SecurityExceptionHandler;
+import com.jhssong.univletter.global.exception.CustomException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,8 +56,11 @@ public class AuthFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
-        } catch (BaseDomainException e) {
+        } catch (CustomException e) {
             SecurityContextHolder.clearContext();
+            System.out.println("hi?");
+//            System.out.println(e);
+            e.printStackTrace();
             securityExceptionHandler.handle(e, request, response);
         }
     }

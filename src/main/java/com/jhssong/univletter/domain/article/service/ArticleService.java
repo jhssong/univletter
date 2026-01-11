@@ -1,11 +1,12 @@
 package com.jhssong.univletter.domain.article.service;
 
+import static com.jhssong.univletter.domain.board.exception.BoardExceptionUtils.BoardNotFound;
+
 import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
 import com.jhssong.univletter.domain.article.dto.ArticleResDTO;
 import com.jhssong.univletter.domain.article.entity.Article;
 import com.jhssong.univletter.domain.article.repository.ArticleRepository;
 import com.jhssong.univletter.domain.board.entity.Board;
-import com.jhssong.univletter.domain.board.exception.BoardExceptionUtils;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -28,7 +29,7 @@ public class ArticleService {
     @Transactional
     public void addNotice(ArticleReqDTO reqDTO) {
         Board board = boardRepository.findByNameAndSubName(reqDTO.boardName(), reqDTO.boardSubName()).orElseThrow(
-                () -> BoardExceptionUtils.BoardNotFound(reqDTO.boardName(), reqDTO.boardSubName())
+                () -> BoardNotFound(reqDTO.boardName(), reqDTO.boardSubName())
         );
         Optional<Article> existing = articleRepository.findByTitleAndWrittenAt(reqDTO.title(), reqDTO.writtenAt());
 

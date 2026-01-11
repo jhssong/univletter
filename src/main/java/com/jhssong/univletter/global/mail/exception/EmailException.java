@@ -1,10 +1,10 @@
 package com.jhssong.univletter.global.mail.exception;
 
-import com.jhssong.errorping.exception.BaseDomainException;
+import com.jhssong.univletter.global.exception.CustomException;
 import org.springframework.http.HttpStatus;
 
-public class EmailException extends BaseDomainException {
-    public EmailException(HttpStatus status, String message) {
-        super(status, message);
+public class EmailException extends CustomException {
+    public EmailException(HttpStatus status, String title, String message, boolean shouldAlert) {
+        super(status, title, message, shouldAlert);
     }
 }

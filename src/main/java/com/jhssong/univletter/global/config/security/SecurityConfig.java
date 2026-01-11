@@ -1,6 +1,6 @@
 package com.jhssong.univletter.global.config.security;
 
-import com.jhssong.univletter.global.config.security.auth.exception.SecurityExceptionHandler;
+import com.jhssong.univletter.global.exception.SecurityExceptionHandler;
 import com.jhssong.univletter.global.config.security.auth.service.AuthFilter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
