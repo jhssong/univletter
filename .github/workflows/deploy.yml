@@ -36,9 +36,6 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x gradlew
 
-#      - name: Build Spring Boot Application
-#        run: ./gradlew bootJar -x test
-
       - name: Build Spring Boot Application
         run: |
           ./gradlew bootJar -x test \
