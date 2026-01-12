@@ -44,7 +44,6 @@ public class EmailService {
             // Get article by Boards
             List<ArticleResDTO> articles = new ArrayList<>();
             for (SubscribeBoard subscribeBoard : subscribeBoards) {
-                System.out.println("EmailService: board: " + subscribeBoard.getBoard().getName());
                 List<ArticleResDTO> article = articleService.fetchArticlesForBoard(subscribeBoard.getBoard(),
                         timeWindow);
                 articles.addAll(article);

@@ -1,4 +1,4 @@
-package com.jhssong.univletter.global.config.security.auth.dto;
+package com.jhssong.univletter.global.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

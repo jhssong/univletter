@@ -1,4 +1,4 @@
-package com.jhssong.univletter.global.config.security.auth.exception;
+package com.jhssong.univletter.global.auth.exception;
 
 import com.jhssong.univletter.global.exception.CustomException;
 import org.springframework.http.HttpStatus;

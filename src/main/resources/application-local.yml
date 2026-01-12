@@ -9,7 +9,11 @@ server:
 admin:
   email: "admin@admin.com"
   password: "admin"
+  api-key: "local-admin-key"
 
-swagger:
-  username: "swagger"
-  password: "swagger"
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui/index.html
