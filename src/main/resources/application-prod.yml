@@ -13,6 +13,14 @@ spring:
 
 server:
   port: ${PORT}
+  forward-headers-strategy: native
+  servlet:
+    session:
+      cookie:
+        secure: true
+        http-only: true
+        same-site: lax
+        path: /
 
 admin:
   email: ${ADMIN_EMAIL}
