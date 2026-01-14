@@ -19,8 +19,7 @@ server:
       cookie:
         secure: true
         http-only: true
-        same-site: lax
-        domain: ${SUB_DOMAIN}
+        same-site: none
         path: /
 
 admin:
