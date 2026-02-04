@@ -4,9 +4,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
 
   devtools:
     add-properties: false
@@ -20,7 +17,7 @@ server:
         secure: true
         http-only: true
         same-site: none
-        path: /
+        domain: "jhssong.com"
 
 admin:
   email: ${ADMIN_EMAIL}
