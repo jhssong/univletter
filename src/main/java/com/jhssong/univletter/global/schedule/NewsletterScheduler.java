@@ -1,6 +1,7 @@
 package com.jhssong.univletter.global.schedule;
 
 import com.jhssong.univletter.domain.article.service.ArticleCrawler;
+import com.jhssong.univletter.domain.article.service.ArticleService;
 import com.jhssong.univletter.global.mail.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ public class NewsletterScheduler {
 
     private final ArticleCrawler articleCrawler;
     private final EmailService emailService;
+    private final ArticleService articleService;
 
     @Scheduled(cron = "0 0 6 * * *")
     public void crawlAndSendNewsletter() {
@@ -24,6 +26,11 @@ public class NewsletterScheduler {
 
         // 2. Sending mail
         emailService.sendDailyNewsletter(timeWindow);
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void deleteArticleOver7days() {
+        articleService.deleteArticleOver7days();
     }
 
 }

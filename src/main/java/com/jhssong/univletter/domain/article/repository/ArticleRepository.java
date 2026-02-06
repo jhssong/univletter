@@ -13,4 +13,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Optional<Article> findByTitleAndWrittenAt(String title, LocalDate writtenAt);
 
     List<Article> findAllByBoard(Board board);
+
+    void deleteByWrittenAtBefore(LocalDate date);
 }

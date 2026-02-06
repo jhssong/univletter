@@ -57,4 +57,11 @@ public class ArticleService {
                 .map(ArticleResDTO::fromEntity)
                 .toList();
     }
+
+    @Transactional
+    public void deleteArticleOver7days() {
+        LocalDate todayKst = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        LocalDate sevenDaysBeforeTodayKst = todayKst.minusDays(7);
+        articleRepository.deleteByWrittenAtBefore(sevenDaysBeforeTodayKst);
+    }
 }
