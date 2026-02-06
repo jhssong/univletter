@@ -16,7 +16,7 @@ jobs:
     # For GPR(GitHub Package Registry)
     permissions:
       contents: read
-      packages: read
+      packages: write
 
     env:
       JAVA_VERSION: '21'
