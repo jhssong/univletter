@@ -69,7 +69,7 @@ jobs:
           script: |
             echo "Logged into remote server: ${{ secrets.SSH_HOST }}"
             
-            cd /home/${{ secrets.SSH_USERNAME }}/workspace
+            cd /home/${{ secrets.SSH_USERNAME }}/workspace/univletter
             
             docker compose pull
             docker compose up -d --remove-orphans
