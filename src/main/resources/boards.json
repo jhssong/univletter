@@ -26,13 +26,28 @@
   },
   {
     "name": "경북대학교 컴퓨터학부",
-    "subName": "글솝",
-    "link": "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&sca=글솝"
+    "subName": "첨컴",
+    "link": "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&sca=첨컴"
   },
   {
     "name": "경북대학교 컴퓨터학부",
     "subName": "인컴",
     "link": "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&sca=인컴"
+  },
+  {
+    "name": "경북대학교 컴퓨터학부",
+    "subName": "글솝",
+    "link": "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&sca=글솝"
+  },
+  {
+    "name": "경북대학교 컴퓨터학부",
+    "subName": "플솝[구.심컴]",
+    "link": "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&sca=플솝%5B구.심컴%5D"
+  },
+  {
+    "name": "경북대학교 컴퓨터학부",
+    "subName": "ICT융합[학부]",
+    "link": "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&sca=ICT융합%5B학부%5D"
   },
   {
     "name": "경북대학교 컴퓨터학부",
