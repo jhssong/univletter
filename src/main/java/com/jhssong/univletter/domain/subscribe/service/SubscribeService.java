@@ -6,11 +6,13 @@ import static com.jhssong.univletter.domain.subscribe.exception.SubscribeExcepti
 import com.jhssong.univletter.domain.board.entity.Board;
 import com.jhssong.univletter.domain.board.repository.BoardRepository;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeDelReqDTO;
+import com.jhssong.univletter.domain.subscribe.dto.SubscribeDetailResDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeReqDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
 import com.jhssong.univletter.domain.subscribe.entity.Subscribe;
 import com.jhssong.univletter.domain.subscribe.repository.SubscribeRepository;
 import com.jhssong.univletter.domain.subscribeBoard.entity.SubscribeBoard;
+import com.jhssong.univletter.domain.subscribeBoard.repository.SubscribeBoardRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
     private final BoardRepository boardRepository;
+    private final SubscribeBoardRepository subscribeBoardRepository;
 
     @Transactional
     public Subscribe subscribe(SubscribeReqDTO reqDTO) {
@@ -81,6 +84,17 @@ public class SubscribeService {
     public List<SubscribeResDTO> getAllSubscribers() {
         List<Subscribe> subscribers = subscribeRepository.findAll();
         return subscribers.stream().map(SubscribeResDTO::fromEntity).toList();
+    }
+
+    public SubscribeDetailResDTO getSubscribeBoard(Long subscribeId) {
+        Subscribe subscribe = subscribeRepository.findById(subscribeId).orElseThrow(() -> {
+            throw SubscriptionNotFound();
+        });
+        List<SubscribeBoard> subscribeBoards = subscribeBoardRepository.findAllBySubscribe(subscribe);
+        List<Long> boardIds = subscribeBoards.stream()
+                .map(SubscribeBoard::getId)
+                .toList();
+        return SubscribeDetailResDTO.from(subscribeId, boardIds);
     }
 
 }

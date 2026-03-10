@@ -11,4 +11,5 @@ public interface SubscribeBoardRepository extends JpaRepository<SubscribeBoard, 
     @Query("SELECT sb FROM SubscribeBoard sb JOIN FETCH sb.board WHERE sb.subscribe = :subscribe")
     List<SubscribeBoard> findAllBySubscribeWithBoard(@Param("subscribe") Subscribe subscribe);
 
+    List<SubscribeBoard> findAllBySubscribe(Subscribe subscribe);
 }

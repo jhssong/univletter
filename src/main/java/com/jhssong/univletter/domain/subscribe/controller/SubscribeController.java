@@ -1,6 +1,7 @@
 package com.jhssong.univletter.domain.subscribe.controller;
 
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeDelReqDTO;
+import com.jhssong.univletter.domain.subscribe.dto.SubscribeDetailResDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeReqDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeResDTO;
 import com.jhssong.univletter.domain.subscribe.dto.SubscribeSuccessResDTO;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +40,12 @@ public class SubscribeController {
     public ResponseEntity<Void> unsubscribe(@Valid @RequestBody SubscribeDelReqDTO reqDTO) {
         subscribeService.unsubscribe(reqDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/api/admin/subscribe/detail/{subscribeId}")
+    public ResponseEntity<SubscribeDetailResDTO> getSubscribeBoard(@PathVariable("subscribeId") Long subscribeId) {
+        SubscribeDetailResDTO subscribeDetailResDTO = subscribeService.getSubscribeBoard(subscribeId);
+        return ResponseEntity.ok(subscribeDetailResDTO);
     }
 
 
