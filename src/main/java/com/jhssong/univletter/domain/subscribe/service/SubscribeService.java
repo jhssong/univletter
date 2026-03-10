@@ -92,7 +92,7 @@ public class SubscribeService {
         });
         List<SubscribeBoard> subscribeBoards = subscribeBoardRepository.findAllBySubscribe(subscribe);
         List<Long> boardIds = subscribeBoards.stream()
-                .map(SubscribeBoard::getId)
+                .map(sb -> sb.getBoard().getId())
                 .toList();
         return SubscribeDetailResDTO.from(subscribeId, boardIds);
     }
