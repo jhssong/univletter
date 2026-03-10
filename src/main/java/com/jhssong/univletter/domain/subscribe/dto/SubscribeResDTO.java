@@ -8,6 +8,8 @@ import lombok.Builder;
 
 @Builder
 public record SubscribeResDTO(
+        @NotNull
+        Long id,
         @NotBlank(message = "이메일")
         String email,
         @NotBlank(message = "토큰")
@@ -21,6 +23,7 @@ public record SubscribeResDTO(
 ) {
     public static SubscribeResDTO fromEntity(Subscribe subscribe) {
         return SubscribeResDTO.builder()
+                .id(subscribe.getId())
                 .email(subscribe.getEmail())
                 .token(subscribe.getToken())
                 .isSubscribed(subscribe.getUnsubscribedAt() == null)
