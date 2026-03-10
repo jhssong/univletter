@@ -8,7 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record SubscribeResDTO(
-        @NotNull
+        @NotNull(message = "구독자 ID")
         Long id,
         @NotBlank(message = "이메일")
         String email,
