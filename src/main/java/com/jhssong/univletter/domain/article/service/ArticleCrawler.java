@@ -6,7 +6,9 @@ import com.jhssong.univletter.domain.article.dto.ArticleReqDTO;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -140,7 +142,7 @@ public class ArticleCrawler {
 
     private void crawlKNUCSE(int timeWindow) {
         String boardName = "경북대학교 컴퓨터학부";
-        String baseURL = "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub5_1&page=";
+        String baseURL = "https://cse.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&page=";
 
         boolean active = true;
         int pageCnt = 1;
@@ -168,7 +170,7 @@ public class ArticleCrawler {
                     String link = titleLink != null ? titleLink.attr("href") : null;
 
                     // 작성자
-                    String author = Optional.ofNullable(row.selectFirst("td.td_name span.sv_member"))
+                    String author = Optional.ofNullable(row.selectFirst("td.td_name"))
                             .map(Element::text).orElse(null);
 
                     // 조회수
